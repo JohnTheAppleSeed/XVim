@@ -23,13 +23,13 @@
 _Pragma("clang diagnostic push") \
 _Pragma("clang diagnostic ignored \"-Warc-performSelector-leaks\"") \
 Stuff; \
-_Pragma("clang diagnostic pop") \
+_Pragma("clang diagnostic pop")
 
 #define SuppressPerformSelectorLeakWarningWithObject(Stuff) \
 _Pragma("clang diagnostic push") \
 _Pragma("clang diagnostic ignored \"-Warc-performSelector-leaks\"") \
 id performObject = Stuff; \
-_Pragma("clang diagnostic pop") \
+_Pragma("clang diagnostic pop")
 
 typedef NS_ENUM(uint8_t, XVimInsertionPoint) {
     XVIM_INSERT_DEFAULT,

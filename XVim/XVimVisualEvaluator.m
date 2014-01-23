@@ -53,7 +53,7 @@ static NSString* MODE_STRINGS[] = {@"", @"-- VISUAL --", @"-- VISUAL LINE --", @
     
 - (id)initWithWindow:(XVimWindow *)window mode:(XVimVisualMode)mode {
     NSTextView *sourceView = window.currentView.textView;
-    NSUInteger start = [[sourceView.selectedRanges objectAtIndex:0] rangeValue].location;
+    NSUInteger start = [(sourceView.selectedRanges)[0] rangeValue].location;
     NSUInteger end = NSMaxRange([sourceView.selectedRanges.lastObject rangeValue]);
     XVimBuffer *buffer = window.currentBuffer;
 

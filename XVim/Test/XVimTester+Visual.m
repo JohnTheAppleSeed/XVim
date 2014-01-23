@@ -90,8 +90,7 @@
     
     static NSString* v_c_result = @"xxxbbb ccc\n";
     
-    return [NSArray arrayWithObjects:
-            XVimMakeTestCase(text2, 0,  0, @"vljd", v_d_result, 0, 0),
+    return @[XVimMakeTestCase(text2, 0,  0, @"vljd", v_d_result, 0, 0),
             XVimMakeTestCase(text2, 0,  0, @"Vjd", V_d_result, 0, 0),
             
             // XVimMakeTestCase(text2, 0,  0, @"vjD", V_d_result, 0, 0), // not supported yet
@@ -151,8 +150,6 @@
             XVimMakeTestCase(text2, 5,  0, @"viw", text2, 4, 3),
             XVimMakeTestCase(text2, 5,  0, @"vaw", text2, 4, 4),
             // Visual Line goes Visual Character with text object 
-            XVimMakeTestCase(text2, 5,  0, @"Vjiw", text2, 5, 14), // Must extend one text object
-            
-            nil];
+            XVimMakeTestCase(text2, 5,  0, @"Vjiw", text2, 5, 14)];
 }
 @end

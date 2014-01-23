@@ -53,8 +53,7 @@
         // The method names correspond the Vim's function name.
         // You can change the method name as needed ( Since Vim's one is not always suitable )
         
-        _excommands = [[NSArray alloc] initWithObjects:
-                       CMD(@"append", @"append:inWindow:"),
+        _excommands = @[CMD(@"append", @"append:inWindow:"),
                        CMD(@"abbreviate", @"abbreviate:inWindow:"),
                        CMD(@"abclear", @"abclear:inWindow:"),
                        CMD(@"aboveleft", @"wrongmodifier:inWindow:"),
@@ -571,8 +570,7 @@
                        CMD(@"Next", @"previous:inWindow:"),
                        CMD(@"Print", @"print:inWindow:"),
                        CMD(@"X", @"X:inWindow:"),
-                       CMD(@"~", @"sub:inWindow:"),
-					   nil];
+                       CMD(@"~", @"sub:inWindow:")];
     }
     return self;
 }
@@ -855,7 +853,7 @@
         return;
     }
     XVimDebug* debug = [[XVimDebug alloc] init];
-    NSString* selector = [NSString stringWithFormat:@"%@:withWindow:",[params objectAtIndex:0]];
+    NSString* selector = [NSString stringWithFormat:@"%@:withWindow:",params[0]];
     [params removeObjectAtIndex:0];
 	SEL method = NSSelectorFromString(selector);
     if( [debug respondsToSelector:method] ){
@@ -952,7 +950,7 @@
 	}
   
 	if (subStrings.count >= 2) {
-		NSString *fromString = [subStrings objectAtIndex:0];
+		NSString *fromString = subStrings[0];
         [subStrings removeObjectAtIndex:0];
         // Todo: ":map a b  " must be mapped to "a" -> "b<space><space>"
 		NSString *toString = [subStrings componentsJoinedByString:@" "]; // get all args seperate by space
@@ -981,7 +979,7 @@
 	}
   
 	if (subStrings.count >= 1) {
-		NSString *fromString = [subStrings objectAtIndex:0];
+		NSString *fromString = subStrings[0];
 		if (fromString.length > 0 ){
 			XVimKeymap *keymap = [[XVim instance] keymapForMode:mode];
 			[keymap unmap:XVimStringFromKeyNotation(fromString)];
@@ -1105,10 +1103,10 @@
     }else if( [setCommand hasPrefix:@"no"] ){
         // "set noXXX" form
         NSString* prop = [setCommand substringFromIndex:2];
-        [options setOption:prop value:[NSNumber numberWithBool:NO]];
+        [options setOption:prop value:@NO];
     }else{
         // "set XXX" form
-        [options setOption:setCommand value:[NSNumber numberWithBool:YES]];
+        [options setOption:setCommand value:@YES];
     }
     
     if( [setCommand isEqualToString:@"wrap"] ){

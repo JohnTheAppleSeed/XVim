@@ -300,9 +300,9 @@ NS_INLINE void init_maps(void)
             NSString *key = key_maps[i].key;
             NSString *sel = key_maps[i].selector;
 
-            [s_unicharToSelector setObject:sel forKey:c];
-            [s_keyToUnichar      setObject:c   forKey:key];
-            [s_unicharToKey      setObject:key forKey:c];
+            s_unicharToSelector[c] = sel;
+            s_keyToUnichar[key] = c;
+            s_unicharToKey[c] = key;
             // any UTF-8 works because we ask for iswprint() or wcwidth()
             s_locale = newlocale(LC_CTYPE_MASK, "en_US.UTF-8", NULL);
         }
@@ -333,7 +333,7 @@ NS_INLINE BOOL isValidKey(NSString *key)
         return isPrintable([key characterAtIndex:0]);
     }
 
-    return [s_keyToUnichar objectForKey:key.uppercaseString] != 0;
+    return s_keyToUnichar[key.uppercaseString] != 0;
 }
 
 NS_INLINE unichar unicharFromKey(NSString *key)
@@ -349,14 +349,14 @@ NS_INLINE unichar unicharFromKey(NSString *key)
         return isPrintable(c) ? c : (unichar)-1;
     }
 
-    return [[s_keyToUnichar objectForKey:key.uppercaseString] unsignedIntegerValue];
+    return [s_keyToUnichar[key.uppercaseString] unsignedIntegerValue];
 }
 
 NS_INLINE NSString *keyFromUnichar(unichar c)
 {
     init_maps();
 
-    NSString *key = [s_unicharToKey objectForKey:@(c)];
+    NSString *key = s_unicharToKey[@(c)];
     if (key) {
         return key;
     }
@@ -676,7 +676,7 @@ NSString* XVimKeyNotationFromXVimString(XVimString* string){
         buf[pos++] = _character;
         buf[pos++] = '\0';
     } else {
-        NSString *keyname = [s_unicharToSelector objectForKey:@(_character)];
+        NSString *keyname = s_unicharToSelector[@(_character)];
 
         if (!keyname) {
             return @selector(__invalid_selector_name__);

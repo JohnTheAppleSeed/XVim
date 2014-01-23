@@ -200,13 +200,13 @@ static Logger* s_defaultLogger = nil;
         numClasses = objc_getClassList(classes, numClasses);
         // Enumerate Classes
         for( int i = 0 ; i < numClasses ; i++ ){
-            NSString* className = [NSString stringWithCString:class_getName(classes[i]) encoding:NSASCIIStringEncoding];
+            NSString* className = @(class_getName(classes[i]));
             [text appendFormat:@"<h2>%@</h2>\n",className];
             [Logger logWithLevel:l format:className];
             [text appendString:@"<ul>\n"];
             Class superClass = class_getSuperclass(classes[i]);
             while( nil != superClass){
-                [text appendFormat:@"<- %@ ", [NSString stringWithCString:class_getName(superClass) encoding:NSASCIIStringEncoding]];
+                [text appendFormat:@"<- %@ ", @(class_getName(superClass))];
                 superClass = class_getSuperclass(superClass);
             }
             [text appendString:@"\n"];

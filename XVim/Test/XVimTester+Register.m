@@ -36,9 +36,7 @@
                                    @"ggg hhh i_i\n"
                                    @"    jjj kkk";
     
-    return [NSArray arrayWithObjects:
-            // Operation using registers
-            XVimMakeTestCase(text, 0, 0, @"\"adw\"aP", text, 0, 0), // Cut and paste
+    return @[XVimMakeTestCase(text, 0, 0, @"\"adw\"aP", text, 0, 0), // Cut and paste
             XVimMakeTestCase(text, 12, 0, @"\"bdw\"ady\"bP", text, 15, 0), // use 'a' and 'b' register
             
             // Numbered registers
@@ -60,9 +58,7 @@
             XVimMakeTestCase(text , 0, 0, @"2x3.", dot_result1, 0, 0),
             
             // Repeat by @@
-            XVimMakeTestCase(@"aaa bbb ccc", 0, 0, @"qallq@a2@@", @"aaa bbb ccc", 8, 0),
-            
-            nil];
+            XVimMakeTestCase(@"aaa bbb ccc", 0, 0, @"qallq@a2@@", @"aaa bbb ccc", 8, 0)];
 }
 
 @end

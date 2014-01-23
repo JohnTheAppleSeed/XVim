@@ -98,7 +98,7 @@
     for( unsigned int i = 0 ; i < count; i++ ){
         SEL sel = method_getName(m[i]);
         if( [NSStringFromSelector(sel) hasSuffix:@"_testcases"] ){
-            [arr addObject:[[NSStringFromSelector(sel) componentsSeparatedByString:@"_"] objectAtIndex:0]];
+            [arr addObject:[NSStringFromSelector(sel) componentsSeparatedByString:@"_"][0]];
         }
     }
     return arr;
@@ -133,7 +133,7 @@
     [[XVimLastActiveWindowController() window] makeFirstResponder:XVimLastActiveSourceView()];
     // Run test for all the cases
     for( NSUInteger i = 0; i < testArray.count; i++ ){
-        [(XVimTestCase*)[testArray objectAtIndex:i] run];
+        [(XVimTestCase*)testArray[i] run];
     }
     
     // Setup Talbe view to show result
@@ -240,10 +240,10 @@
     XVimTestCase* resultRow;
     
     if(showPassing){
-        resultRow = (XVimTestCase*)[self.testCases objectAtIndex:(NSUInteger)rowIndex];
+        resultRow = (XVimTestCase*)(self.testCases)[(NSUInteger)rowIndex];
     }else{
        NSInteger index = [self getIndexOfNthFailingTestcase:rowIndex];
-       resultRow = (XVimTestCase*)[self.testCases objectAtIndex:(NSUInteger)index];
+       resultRow = (XVimTestCase*)(self.testCases)[(NSUInteger)index];
     }
     
     if( [aTableColumn.identifier isEqualToString:@"Description"] ){
@@ -296,10 +296,10 @@
         CGFloat width = column.width;
         NSString* msg;
         if(showPassing){
-            msg = ((XVimTestCase*)[self.testCases objectAtIndex:(NSUInteger)row]).message;
+            msg = ((XVimTestCase*)(self.testCases)[(NSUInteger)row]).message;
         }else{
             NSInteger index = [self getIndexOfNthFailingTestcase:row];
-            msg = ((XVimTestCase*)[self.testCases objectAtIndex:index]).message;
+            msg = ((XVimTestCase*)(self.testCases)[index]).message;
         }
         if( nil == msg || [msg isEqualToString:@""] ){
             msg = @" ";

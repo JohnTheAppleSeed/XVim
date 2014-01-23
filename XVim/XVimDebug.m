@@ -23,7 +23,7 @@
 
 - (void)trace:(NSArray*)params withWindow:(XVimWindow*)window{
     if( params.count != 0 ){
-        [Logger registerTracing:[params objectAtIndex:0]];
+        [Logger registerTracing:params[0]];
     }
 }
 

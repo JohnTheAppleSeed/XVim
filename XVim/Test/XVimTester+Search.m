@@ -36,9 +36,7 @@
                              @"ggg BBB i_i\n"  // 24 28 32
                              @"    jjj bbb";   // 36 40 44
     
-    return [NSArray arrayWithObjects:
-            // Search (/,?)
-            XVimMakeTestCase(text1, 0,  0, @"/bbb<CR>", text1, 4, 0),
+    return @[XVimMakeTestCase(text1, 0,  0, @"/bbb<CR>", text1, 4, 0),
             XVimMakeTestCase(text1, 8,  0, @"?bbb<CR>", text1, 4, 0),
             
             // Repeating search
@@ -96,8 +94,6 @@
             
             // * or # should only word boundary - should work also when vimregex is on
             XVimMakeTestCase(text3, 5,  0, @":set vimregex<CR>*" , text3, 44, 0),
-            XVimMakeTestCase(text3,45,  0, @":set vimregex<CR>#" , text3,  4, 0),
-            
-            nil];
+            XVimMakeTestCase(text3,45,  0, @":set vimregex<CR>#" , text3,  4, 0)];
 }
 @end

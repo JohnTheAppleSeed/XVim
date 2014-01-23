@@ -35,20 +35,18 @@
     if( self = [super init] ){
         // Abbreviation mapping
         _option_maps =
-        [[NSDictionary alloc] initWithObjectsAndKeys:
-         @"ignorecase",@"ic",
-         @"wrapscan",@"ws",
-         @"errorbells",@"eb",
-         @"incsearch",@"is",
-         @"gdefault",@"gd",
-         @"smartcase",@"scs",
-         @"clipboard",@"cb",
-         @"timeoutlen",@"tm",
-         @"laststatus",@"ls",
-         @"hlsearch",@"hls",
-         @"number", @"nu",
-         @"vimregex", @"vr",
-         nil];
+        @{@"ic": @"ignorecase",
+         @"ws": @"wrapscan",
+         @"eb": @"errorbells",
+         @"is": @"incsearch",
+         @"gd": @"gdefault",
+         @"scs": @"smartcase",
+         @"cb": @"clipboard",
+         @"tm": @"timeoutlen",
+         @"ls": @"laststatus",
+         @"hls": @"hlsearch",
+         @"nu": @"number",
+         @"vr": @"vimregex"};
         
         // Default values
         _ignorecase = NO;
@@ -71,9 +69,9 @@
 
 - (id)getOption:(NSString*)name{
     NSString* propName = name;
-    if( [_option_maps objectForKey:name] ){
+    if( _option_maps[name] ){
         // If the name is abbriviation use full name
-        propName = [_option_maps objectForKey:name];
+        propName = _option_maps[name];
     }
     if( [self respondsToSelector:NSSelectorFromString(propName)] ){
         return [self valueForKey:propName];
@@ -84,9 +82,9 @@
 
 - (void)setOption:(NSString*)name value:(id)value{
     NSString* propName = name;
-    if( [_option_maps objectForKey:name] ){
+    if( _option_maps[name] ){
         // If the name is abbriviation use full name
-        propName = [_option_maps objectForKey:name];
+        propName = _option_maps[name];
     }
     
     if( [self respondsToSelector:NSSelectorFromString(propName)] ){

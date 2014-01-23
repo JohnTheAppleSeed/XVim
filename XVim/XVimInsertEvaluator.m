@@ -61,17 +61,13 @@
         _movementKeyPressed = NO;
         _insertedEventsAbort = NO;
         _enoughBufferForReplace = YES;
-        _cancelKeys = [[NSArray alloc] initWithObjects:
-                       [NSValue valueWithPointer:@selector(ESC:)],
+        _cancelKeys = @[[NSValue valueWithPointer:@selector(ESC:)],
                        [NSValue valueWithPointer:@selector(C_LSQUAREBRACKET:)],
-                       [NSValue valueWithPointer:@selector(C_c:)],
-                       nil];
-        _movementKeys = [[NSArray alloc] initWithObjects:
-                         [NSValue valueWithPointer:@selector(Up:)],
+                       [NSValue valueWithPointer:@selector(C_c:)]];
+        _movementKeys = @[[NSValue valueWithPointer:@selector(Up:)],
                          [NSValue valueWithPointer:@selector(Down:)],
                          [NSValue valueWithPointer:@selector(Left:)],
-                         [NSValue valueWithPointer:@selector(Right:)],
-                         nil];
+                         [NSValue valueWithPointer:@selector(Right:)]];
     }
     return self;
 }
@@ -260,7 +256,7 @@
             if (keyStroke.isPrintable){
                 [xview.textView insertText:keyStroke.xvimString];
             }else{
-                [xview.textView interpretKeyEvents:[NSArray arrayWithObject:event]];
+                [xview.textView interpretKeyEvents:@[event]];
             }
         }
     }

@@ -589,7 +589,7 @@ static char const * const XVIM_KEY_VIEW = "xvim_view";
     XVimBuffer *buffer = self.buffer;
 
     if (_selectionMode != XVIM_VISUAL_BLOCK) {
-        return [NSArray arrayWithObject:[NSValue valueWithRange:[self _selectedRange]]];
+        return @[[NSValue valueWithRange:[self _selectedRange]]];
     }
 
     NSMutableArray *rangeArray = [[NSMutableArray alloc] init];
@@ -1463,7 +1463,7 @@ static char const * const XVIM_KEY_VIEW = "xvim_view";
         NSArray   *lines     = [text componentsSeparatedByString:buffer.lineEnding];
 
         for (NSUInteger i = 0 ; i < lines.count ; i++) {
-            NSString *line = [lines objectAtIndex:i];
+            NSString *line = lines[i];
             NSUInteger targetLine = startLine + i;
             NSUInteger head = [buffer indexOfLineNumber:targetLine];
 
@@ -1544,7 +1544,7 @@ static char const * const XVIM_KEY_VIEW = "xvim_view";
     } else {
         NSArray *ranges = [self _selectedRanges];
 
-        endPos = undoPos = [[ranges objectAtIndex:0] rangeValue].location;
+        endPos = undoPos = [ranges[0] rangeValue].location;
         [buffer beginEditingAtIndex:undoPos];
         for (NSValue *v in ranges) {
             [buffer swapCharactersInRange:v.rangeValue mode:mode];
@@ -1984,7 +1984,7 @@ static char const * const XVIM_KEY_VIEW = "xvim_view";
         // At this point the lines are already sorted
         [lines enumerateObjectsUsingBlock:^(NSString *str, NSUInteger idx, BOOL *stop) {
             if (idx < [lines count] - 1) {
-                NSString *nextStr = [lines objectAtIndex:idx + 1];
+                NSString *nextStr = lines[idx + 1];
                 if ([str isEqualToString:nextStr]) {
                     [removeIndices addIndex:idx + 1];
                 }

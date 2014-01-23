@@ -46,11 +46,7 @@
                                     @"    jjj kkk";
     
     
-    return [NSArray arrayWithObjects:
-            // map
-            // unmap
-            // mapclear
-            XVimMakeTestCase(text2, 5,  0, @":map h l<CR>h",   text2,  6, 0),
+    return @[XVimMakeTestCase(text2, 5,  0, @":map h l<CR>h",   text2,  6, 0),
             XVimMakeTestCase(text2, 5,  0, @":unmap h<CR>h",   text2,  4, 0),
             XVimMakeTestCase(text2, 5,  0, @":map jj l<CR>jj", text2,  6, 0),
             XVimMakeTestCase(text2, 5,  0, @":mapclear<CR>jj", text2, 29, 0),
@@ -84,9 +80,7 @@
             
             
             // mapping should not affect arguments
-            XVimMakeTestCase(text2, 0, 0, @":nmap b c<CR>fb", text2, 4, 0), // Issue #510
-            
-    nil];
+            XVimMakeTestCase(text2, 0, 0, @":nmap b c<CR>fb", text2, 4, 0)];
 }
 
 @end

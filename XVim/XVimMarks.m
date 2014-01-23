@@ -27,9 +27,9 @@ static NSString* FILE_MARKS = @"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     for( NSUInteger i = 0 ; i < LOCAL_MARKS.length; i++){
         unichar c = [LOCAL_MARKS characterAtIndex:i];
         NSString* name = [NSString stringWithFormat:@"%C", c];
-        [dic setObject:[[XVimMark alloc] init] forKey:name];
+        dic[name] = [[XVimMark alloc] init];
     }
-    [dic setObject:[dic objectForKey:@"`"] forKey:@"'"]; // Make these marks same
+    dic[@"'"] = dic[@"`"]; // Make these marks same
     return dic;
 }
 
@@ -38,7 +38,7 @@ static NSString* FILE_MARKS = @"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     for( NSUInteger i = 0 ; i < FILE_MARKS.length; i++ ){
         unichar c = [FILE_MARKS characterAtIndex:i];
         NSString* name = [NSString stringWithFormat:@"%C", c];
-        [dic setObject:[[XVimMark alloc] init] forKey:name];
+        dic[name] = [[XVimMark alloc] init];
     }
     return dic;
 }
@@ -61,7 +61,7 @@ static NSString* FILE_MARKS = @"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     for( NSUInteger i = 0 ; i < LOCAL_MARKS.length; i++){
         unichar c = [LOCAL_MARKS characterAtIndex:i];
         NSString* name = [NSString stringWithFormat:@"%C", c];
-        XVimMark* mark = [marks objectForKey:name];
+        XVimMark* mark = marks[name];
         // Here we cast NSUInteger to int to dump. This is just because it may be NSNotFound and want make it dumped as "-1" not big value.
         // This is not accurate but should not be big problem for just dumping purpose.
         [str appendFormat:@"%@    %-5d%-7d%20@\n", (NSString*)name, (int)mark.line, (int)mark.column, mark.document];
@@ -76,7 +76,7 @@ static NSString* FILE_MARKS = @"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     for( NSUInteger i = 0 ; i < FILE_MARKS.length; i++){
         unichar c = [FILE_MARKS characterAtIndex:i];
         NSString* name = [NSString stringWithFormat:@"%C", c];
-        XVimMark* mark = [marks objectForKey:name];
+        XVimMark* mark = marks[name];
         // Here we cast NSUInteger to int to dump. This is just because it may be NSNotFound and want make it dumped as "-1" not big value.
         // This is not accurate but should not be big problem for just dumping purpose.
         [str appendFormat:@"%@    %-5d%-7d%20@\n", (NSString*)name, (int)mark.line, (int)mark.column, mark.document];
@@ -98,9 +98,9 @@ static NSString* FILE_MARKS = @"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     
     unichar c = [name characterAtIndex:0];
     if( [_localMarkSet characterIsMember:c] ){
-        return [[self marksForDocument:documentPath] objectForKey:name];
+        return [self marksForDocument:documentPath][name];
     }else if( [_fileMarkSet characterIsMember:c] ){
-        return [_fileMarks objectForKey:name];
+        return _fileMarks[name];
     }else{
         TRACE_LOG(@"Unsupported name for mark is passed");
         return nil;
@@ -130,10 +130,10 @@ static NSString* FILE_MARKS = @"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 - (NSDictionary*)marksForDocument:(NSString*)documentPath{
     NSAssert(nil != documentPath, @"documentPath can not be nil");
-    if( nil == [_localMarksDictionary objectForKey:documentPath] ){
-        [_localMarksDictionary setObject:[XVimMarks createEmptyLocalMarkDictionary] forKey:documentPath];
+    if( nil == _localMarksDictionary[documentPath] ){
+        _localMarksDictionary[documentPath] = [XVimMarks createEmptyLocalMarkDictionary];
     }
-    NSDictionary* marks = [_localMarksDictionary objectForKey:documentPath];
+    NSDictionary* marks = _localMarksDictionary[documentPath];
     
     NSAssert( nil != marks, @"This should not happen");
     return marks;
@@ -155,11 +155,11 @@ static NSString* FILE_MARKS = @"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         return;
     }
     
-    if( nil == [_localMarksDictionary objectForKey:mark.document] ){
-        [_localMarksDictionary setObject:[XVimMarks createEmptyLocalMarkDictionary] forKey:mark.document];
+    if( nil == _localMarksDictionary[mark.document] ){
+        _localMarksDictionary[mark.document] = [XVimMarks createEmptyLocalMarkDictionary];
     }
-    NSDictionary* marks = [_localMarksDictionary objectForKey:mark.document];
-    id object __unused = [[marks objectForKey:[NSString stringWithFormat:@"%C", c]] initWithMark:mark];
+    NSDictionary* marks = _localMarksDictionary[mark.document];
+    id object __unused = [marks[[NSString stringWithFormat:@"%C", c]] initWithMark:mark];
     return;
 }
 
@@ -179,7 +179,7 @@ static NSString* FILE_MARKS = @"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     }
     
     // Never replace object in dictionary (just change the value of the mark)
-    id object __unused = [[_fileMarks objectForKey:[NSString stringWithFormat:@"%C", c]] initWithMark:mark];
+    id object __unused = [_fileMarks[[NSString stringWithFormat:@"%C", c]] initWithMark:mark];
     return;
 }
 @end

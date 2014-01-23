@@ -30,9 +30,7 @@
                              @"g[g }hh i_i\n"  // 24 28 32
                              @"    jj] kkk";   // 36 40 44
     
-    return [NSArray arrayWithObjects:
-            // b, B
-            XVimMakeTestCase(text2,  6, 0,  @"b", text2,  4, 0),
+    return @[XVimMakeTestCase(text2,  6, 0,  @"b", text2,  4, 0),
             XVimMakeTestCase(text2, 14, 0, @"3b", text2,  4, 0),
             XVimMakeTestCase(text2,  4, 0,  @"B", text2,  0, 0),
             XVimMakeTestCase(text2, 27, 0, @"3B", text2, 16, 0),
@@ -137,10 +135,6 @@
             XVimMakeTestCase(text2, 8, 0, @"2Fb;", text2, 4, 0),
             XVimMakeTestCase(text2, 8, 0, @"Fb2;", text2, 4, 0),
             XVimMakeTestCase(text2, 8, 0, @"2Fb,", text2, 6, 0),
-            XVimMakeTestCase(text2, 8, 0, @"3Fb2,", text2, 6, 0),
-            
-            // , ; (comma semicolon) for t T
-            
-        nil];
+            XVimMakeTestCase(text2, 8, 0, @"3Fb2,", text2, 6, 0)];
 }
 @end

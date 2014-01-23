@@ -94,10 +94,10 @@
 
 - (void)mapsInNode:(XVimKeymapNode*)node :(NSString*)mappingKey :(NSMutableDictionary*)dictionary{
     if( node.target != nil ){
-        [dictionary setObject:node.target forKey:mappingKey];
+        dictionary[mappingKey] = node.target;
     }
     for(XVimKeyStroke* key in node.dict){
-        XVimKeymapNode* next = [node.dict objectForKey:key];
+        XVimKeymapNode* next = (node.dict)[key];
         NSString* nextMap = [mappingKey stringByAppendingFormat:@"%C", key.character];
         [self mapsInNode:next :nextMap :dictionary];
     }
@@ -114,10 +114,10 @@
     XVimKeymapNode* current = self.root;
     NSArray* strokes = XVimKeyStrokesFromXVimString(keyStrokes);
     for( XVimKeyStroke* stroke in strokes ){
-		XVimKeymapNode *nextNode = [current.dict objectForKey:stroke];
+		XVimKeymapNode *nextNode = (current.dict)[stroke];
 		if (!nextNode){
 			nextNode = [[XVimKeymapNode alloc] init];
-			[current.dict setObject:nextNode forKey:stroke];
+			(current.dict)[stroke] = nextNode;
 		}
 		current = nextNode;
     }
@@ -134,8 +134,8 @@
     XVimKeymapNode* nextNode = nil;
     XVimKeyStroke* stroke = nil;
     if( keystrokes.count != 0 ){
-        stroke = [keystrokes objectAtIndex:0];
-        nextNode = [node.dict objectForKey:stroke];
+        stroke = keystrokes[0];
+        nextNode = (node.dict)[stroke];
         if( nextNode ){
             // Go to most deep node recursively
             [keystrokes removeObjectAtIndex:0];
@@ -181,8 +181,8 @@
 	XVimKeymapNode *nextNode = nil;      // next node to walk to
     XVimString* unProcessedString = @""; // if a node does not have any path to walk rest of input keys are stored to this variable.
 	for ( NSUInteger i = 0 ; i < strokes.count; i++ ){
-        XVimKeyStroke* stroke = [strokes objectAtIndex:i];
-        nextNode = [node.dict objectForKey:stroke];
+        XVimKeyStroke* stroke = strokes[i];
+        nextNode = (node.dict)[stroke];
 		if (nil != nextNode){
             // If there is a node to follow
             [context.inputKeys appendString:[stroke xvimString]];

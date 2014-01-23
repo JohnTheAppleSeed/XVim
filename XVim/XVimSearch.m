@@ -268,7 +268,7 @@
     // if wrapscan is on, search below base as well.
     if (found.location == NSNotFound && options.wrapscan == TRUE) {
         if ([matches count] > 0) {
-            NSTextCheckingResult *match = ([matches objectAtIndex:[matches count]-1]);
+            NSTextCheckingResult *match = (matches[[matches count]-1]);
             found = [match range];
             [window errorMessage:[NSString stringWithFormat: @"Search wrapped for '%@'",self.lastSearchDisplayString] ringBell:FALSE];
         }

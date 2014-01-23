@@ -83,7 +83,7 @@
         // Nothing ( Maybe AutoLayout view does the job "automatically")
     }else{
         if( [container subviews].count > 0 ){
-            [[[container subviews] objectAtIndex:0] setFrame:NSMakeRect(0, height, parentRect.size.width, parentRect.size.height-height)];
+            [[container subviews][0] setFrame:NSMakeRect(0, height, parentRect.size.width, parentRect.size.height-height)];
         }
     }
 }
@@ -98,7 +98,7 @@
 
 - (void)_bufferChangedNotification:(NSNotification *)notification
 {
-    XVimBuffer *buffer = [notification.userInfo objectForKey:XVimBufferKey];
+    XVimBuffer *buffer = (notification.userInfo)[XVimBufferKey];
     NSString   *path = buffer.document.fileURL.path;
 
     if (path) {

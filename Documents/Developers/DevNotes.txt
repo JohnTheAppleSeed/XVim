@@ -38,8 +38,8 @@ To access "condole view" you can use
 This is also NSViewController.
 If you want to access its view you have to get the view but it does provides public property to access it.
 So we have to specify the instance varible name to get the view as below.
-    IDEConsoleTextView* pView;
-    object_getInstanceVariable(console , "_consoleView" , (void**)&pView);
+	Ivar ivar = class_getInstanceVariable([console class], [@"_consoleView" UTF8String]);
+    IDEConsoleTextView* pView = object_getIvar(console, ivar);
 Now "pView" is IDEConsoleTextView (subclass of NSView)
 
 To insert text into the console view you can do like

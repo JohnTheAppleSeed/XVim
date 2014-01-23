@@ -48,12 +48,6 @@
     return self;
 }
 
-- (void)dealloc
-{
-    [_undoManager release];
-    [_values release];
-    [super dealloc];
-}
 
 - (void)setStartIndex:(NSUInteger)index
 {
@@ -119,7 +113,7 @@
 
 - (void)registerForBuffer:(XVimBuffer *)buffer
 {
-    _undoManager = [buffer.undoManager retain];
+    _undoManager = buffer.undoManager;
     [_undoManager registerUndoWithTarget:buffer selector:@selector(undoRedo:) object:self];
 }
 

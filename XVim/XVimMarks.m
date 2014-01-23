@@ -23,47 +23,40 @@ static NSString* FILE_MARKS = @"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 @synthesize fileMarks = _fileMarks;
 
 + (NSDictionary*)createEmptyLocalMarkDictionary{
-    NSMutableDictionary* dic = [[[NSMutableDictionary alloc] init] autorelease];
+    NSMutableDictionary* dic = [[NSMutableDictionary alloc] init];
     for( NSUInteger i = 0 ; i < LOCAL_MARKS.length; i++){
         unichar c = [LOCAL_MARKS characterAtIndex:i];
         NSString* name = [NSString stringWithFormat:@"%C", c];
-        [dic setObject:[[[XVimMark alloc] init] autorelease] forKey:name];
+        [dic setObject:[[XVimMark alloc] init] forKey:name];
     }
     [dic setObject:[dic objectForKey:@"`"] forKey:@"'"]; // Make these marks same
     return dic;
 }
 
 + (NSDictionary*)createEmptyFileMarkDictionary{
-    NSMutableDictionary* dic = [[[NSMutableDictionary alloc] init] autorelease];
+    NSMutableDictionary* dic = [[NSMutableDictionary alloc] init];
     for( NSUInteger i = 0 ; i < FILE_MARKS.length; i++ ){
         unichar c = [FILE_MARKS characterAtIndex:i];
         NSString* name = [NSString stringWithFormat:@"%C", c];
-        [dic setObject:[[[XVimMark alloc] init] autorelease] forKey:name];
+        [dic setObject:[[XVimMark alloc] init] forKey:name];
     }
     return dic;
 }
 
 - (id)init{
     if(self = [super init]){
-        _fileMarks = [[XVimMarks createEmptyFileMarkDictionary] retain];
+        _fileMarks = [XVimMarks createEmptyFileMarkDictionary];
         _localMarksDictionary = [[NSMutableDictionary alloc] init];
-        _localMarkSet = [[NSCharacterSet characterSetWithCharactersInString:LOCAL_MARKS] retain];
-        _fileMarkSet = [[NSCharacterSet characterSetWithCharactersInString:@"ABCDEFGHIJKLMNOPQRSTUVWXYZ"] retain];
+        _localMarkSet = [NSCharacterSet characterSetWithCharactersInString:LOCAL_MARKS];
+        _fileMarkSet = [NSCharacterSet characterSetWithCharactersInString:@"ABCDEFGHIJKLMNOPQRSTUVWXYZ"];
     }
     return self;
 }
 
-- (void)dealloc{
-    [_fileMarks release];
-    [_localMarksDictionary release];
-    [_localMarkSet release];
-    [_fileMarkSet release];
-    [super dealloc];
-}
 
 - (NSString*)dumpMarksForDocument:(NSString*)document{
     NSDictionary* marks = [self marksForDocument:document];
-    NSMutableString* str = [[[NSMutableString alloc] init] autorelease];
+    NSMutableString* str = [[NSMutableString alloc] init];
     [str appendString:@"Mark Line Column File\n"];
     for( NSUInteger i = 0 ; i < LOCAL_MARKS.length; i++){
         unichar c = [LOCAL_MARKS characterAtIndex:i];
@@ -78,7 +71,7 @@ static NSString* FILE_MARKS = @"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 - (NSString*)dumpFileMarks{
     NSDictionary* marks = _fileMarks;
-    NSMutableString* str = [[[NSMutableString alloc] init] autorelease];
+    NSMutableString* str = [[NSMutableString alloc] init];
     [str appendString:@"Mark Line Column File\n"];
     for( NSUInteger i = 0 ; i < FILE_MARKS.length; i++){
         unichar c = [FILE_MARKS characterAtIndex:i];
@@ -166,7 +159,7 @@ static NSString* FILE_MARKS = @"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         [_localMarksDictionary setObject:[XVimMarks createEmptyLocalMarkDictionary] forKey:mark.document];
     }
     NSDictionary* marks = [_localMarksDictionary objectForKey:mark.document];
-    [[marks objectForKey:[NSString stringWithFormat:@"%C", c]] initWithMark:mark];
+    id object __unused = [[marks objectForKey:[NSString stringWithFormat:@"%C", c]] initWithMark:mark];
     return;
 }
 
@@ -186,7 +179,7 @@ static NSString* FILE_MARKS = @"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     }
     
     // Never replace object in dictionary (just change the value of the mark)
-    [[_fileMarks objectForKey:[NSString stringWithFormat:@"%C", c]] initWithMark:mark];
+    id object __unused = [[_fileMarks objectForKey:[NSString stringWithFormat:@"%C", c]] initWithMark:mark];
     return;
 }
 @end

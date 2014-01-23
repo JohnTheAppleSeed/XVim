@@ -56,7 +56,7 @@
         _mode = mode;
         _blockEditColumn = NSNotFound;
         _blockLines = XVimMakeRange(NSNotFound, NSNotFound);
-        _lastInsertedText = [@"" retain];
+        _lastInsertedText = @"";
         _oneCharMode = oneCharMode;
         _movementKeyPressed = NO;
         _insertedEventsAbort = NO;
@@ -76,13 +76,6 @@
     return self;
 }
 
-- (void)dealloc
-{
-    [_lastInsertedText release];
-    [_cancelKeys release];
-    [_movementKeys release];
-    [super dealloc];
-}
 
 - (NSString*)modeString{
 	return @"-- INSERT --";
@@ -235,7 +228,8 @@
 
     SEL keySelector = keyStroke.selector;
     if ([self respondsToSelector:keySelector]) {
-        nextEvaluator = [self performSelector:keySelector];
+		SuppressPerformSelectorLeakWarningWithObject([self performSelector:keySelector]);
+        nextEvaluator = performObject;
     } else {
         if(self.movementKeyPressed) {
             // Flag movement key as not pressed until the next movement key is pressed
@@ -275,7 +269,7 @@
 
 - (XVimEvaluator*)C_o{
     self.onChildCompleteHandler = @selector(onC_oComplete:);
-    return [[[XVimNormalEvaluator alloc] initWithWindow:self.window] autorelease];
+    return [[XVimNormalEvaluator alloc] initWithWindow:self.window];
 }
 
 - (XVimEvaluator*)onC_oComplete:(XVimEvaluator*)childEvaluator{

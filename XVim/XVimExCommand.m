@@ -36,8 +36,8 @@
 
 -(id)initWithCmd:(NSString*)cmd method:(NSString*)method{
     if( self = [super init] ){
-        cmdName = [cmd retain];
-        methodName = [method retain];
+        cmdName = cmd;
+        methodName = method;
     }
     return self;
 }
@@ -577,10 +577,6 @@
     return self;
 }
 
-- (void)dealloc{
-    [_excommands release];
-    [super dealloc];
-}
 
 // This method correnspons parsing part of get_address in ex_cmds.c
 - (NSUInteger)getAddress:(unichar*)parsing :(unichar**)cmdLeft inWindow:(XVimWindow*)window
@@ -710,7 +706,7 @@
 
 - (XVimExArg*)parseCommand:(NSString*)cmd inWindow:(XVimWindow*)window
 {
-    XVimExArg* exarg = [[[XVimExArg alloc] init] autorelease]; 
+    XVimExArg* exarg = [[XVimExArg alloc] init]; 
     NSUInteger len = [cmd length];
     
     // Create unichar array to parse. Its easier
@@ -836,7 +832,7 @@
         if( [cmdname.cmdName hasPrefix:[exarg cmd]] ){
             SEL method = NSSelectorFromString(cmdname.methodName);
             if( [self respondsToSelector:method] ){
-                [self performSelector:method withObject:exarg withObject:window];
+                SuppressPerformSelectorLeakWarning([self performSelector:method withObject:exarg withObject:window]);
                 break;
             }
         }
@@ -858,11 +854,12 @@
     if( [params count] == 0 ){
         return;
     }
-    XVimDebug* debug = [[[XVimDebug alloc] init] autorelease];
+    XVimDebug* debug = [[XVimDebug alloc] init];
     NSString* selector = [NSString stringWithFormat:@"%@:withWindow:",[params objectAtIndex:0]];
     [params removeObjectAtIndex:0];
-    if( [debug respondsToSelector:NSSelectorFromString(selector)] ){
-        [debug performSelector:NSSelectorFromString(selector) withObject:params withObject:window];
+	SEL method = NSSelectorFromString(selector);
+    if( [debug respondsToSelector:method] ){
+		SuppressPerformSelectorLeakWarning([debug performSelector:method withObject:params withObject:window]);
     }
 }
 
@@ -1272,7 +1269,7 @@
     IDEWorkspaceTabController* ctrl = XVimLastActiveWorkspaceTabController();
     if( [ctrl respondsToSelector:item.action] ){
         NSLog(@"IDEWorkspaceTabController perform action");
-        [ctrl performSelector:item.action withObject:item];
+        SuppressPerformSelectorLeakWarning([ctrl performSelector:item.action withObject:item]);
     } else {
         [NSApp sendAction:item.action to:item.target from:item];
         NSLog(@"menu perform action");
@@ -1281,8 +1278,9 @@
 
 - (void)xctabctrl:(XVimExArg*)args inWindow:(XVimWindow*)window{
     IDEWorkspaceTabController* ctrl = XVimLastActiveWorkspaceTabController();
-    if( [ctrl respondsToSelector:NSSelectorFromString(args.arg)] ){
-        [ctrl performSelector:NSSelectorFromString(args.arg) withObject:self];
+	SEL method = NSSelectorFromString(args.arg);
+    if( [ctrl respondsToSelector:method] ){
+        SuppressPerformSelectorLeakWarning([ctrl performSelector:method withObject:self]);
     }
 }
 

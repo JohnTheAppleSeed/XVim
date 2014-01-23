@@ -51,7 +51,7 @@
             m.position = newPos;
             
             // set the position before the jump
-            XVimMark *cur_mark = [[[XVimMark alloc] init] autorelease];
+            XVimMark *cur_mark = [[XVimMark alloc] init];
             XVimView *xview = self.currentView;
             XVimPosition pos = xview.insertionPosition;
             cur_mark.line = pos.line;
@@ -64,37 +64,37 @@
             mode = XVIM_INSERT_APPEND;
         }
     }
-	return [[[XVimInsertEvaluator alloc] initWithWindow:self.window oneCharMode:NO mode:mode] autorelease];
+	return [[XVimInsertEvaluator alloc] initWithWindow:self.window oneCharMode:NO mode:mode];
 }
 
 - (XVimEvaluator*)J{
-    XVimJoinEvaluator* eval = [[[XVimJoinEvaluator alloc] initWithWindow:self.window addSpace:NO] autorelease];
+    XVimJoinEvaluator* eval = [[XVimJoinEvaluator alloc] initWithWindow:self.window addSpace:NO];
     return [eval executeOperationWithMotion:XVIM_MAKE_MOTION(MOTION_NONE, CHARACTERWISE_EXCLUSIVE, MOPT_NONE, self.numericArg)];
 }
 
 - (XVimEvaluator*)u{
     [self.argumentString appendString:@"u"];
-	return [[[XVimSwapCharsEvaluator alloc] initWithWindow:self.window mode:XVIM_BUFFER_SWAP_LOWER] autorelease];
+	return [[XVimSwapCharsEvaluator alloc] initWithWindow:self.window mode:XVIM_BUFFER_SWAP_LOWER];
 }
 
 - (XVimEvaluator*)U{
     [self.argumentString appendString:@"U"];
-	return [[[XVimSwapCharsEvaluator alloc] initWithWindow:self.window mode:XVIM_BUFFER_SWAP_UPPER] autorelease];
+	return [[XVimSwapCharsEvaluator alloc] initWithWindow:self.window mode:XVIM_BUFFER_SWAP_UPPER];
 }
 
 - (XVimEvaluator*)v{
     // Select previous visual selection
-    return [[[XVimVisualEvaluator alloc] initWithLastVisualStateWithWindow:self.window] autorelease];
+    return [[XVimVisualEvaluator alloc] initWithLastVisualStateWithWindow:self.window];
 }
 
 - (XVimEvaluator*)QUESTION{
     [self.argumentString appendString:@"?"];
-	return [[[XVimSwapCharsEvaluator alloc] initWithWindow:self.window mode:XVIM_BUFFER_SWAP_ROT13] autorelease];
+	return [[XVimSwapCharsEvaluator alloc] initWithWindow:self.window mode:XVIM_BUFFER_SWAP_ROT13];
 }
 
 - (XVimEvaluator*)TILDE{
     [self.argumentString appendString:@"~"];
-	return [[[XVimSwapCharsEvaluator alloc] initWithWindow:self.window mode:XVIM_BUFFER_SWAP_CASE] autorelease];
+	return [[XVimSwapCharsEvaluator alloc] initWithWindow:self.window mode:XVIM_BUFFER_SWAP_CASE];
 }
 
 @end

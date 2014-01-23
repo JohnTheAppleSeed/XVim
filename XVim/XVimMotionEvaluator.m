@@ -50,10 +50,6 @@
     return self;
 }
 
-- (void)dealloc{
-    [_motion release];
-    [super dealloc];
-}
 
 -(XVimEvaluator*)_motionFixed:(XVimMotion*)motion{
     if( _forcedMotionType == CHARACTERWISE_EXCLUSIVE){
@@ -135,15 +131,15 @@
 - (XVimEvaluator*)f{
     [self.argumentString appendString:@"f"];
     self.onChildCompleteHandler = @selector(onComplete_fFtT:);
-    _motion = [XVIM_MAKE_MOTION(MOTION_NEXT_CHARACTER, CHARACTERWISE_INCLUSIVE, MOPT_NONE, 1) retain];
-    return [[[XVimArgumentEvaluator alloc] initWithWindow:self.window] autorelease];
+    _motion = XVIM_MAKE_MOTION(MOTION_NEXT_CHARACTER, CHARACTERWISE_INCLUSIVE, MOPT_NONE, 1);
+    return [[XVimArgumentEvaluator alloc] initWithWindow:self.window];
 }
 
 - (XVimEvaluator*)F{
     [self.argumentString appendString:@"F"];
     self.onChildCompleteHandler = @selector(onComplete_fFtT:);
-    _motion = [XVIM_MAKE_MOTION(MOTION_PREV_CHARACTER, CHARACTERWISE_EXCLUSIVE, MOPT_NONE, 1) retain];
-    return [[[XVimArgumentEvaluator alloc] initWithWindow:self.window] autorelease];
+    _motion = XVIM_MAKE_MOTION(MOTION_PREV_CHARACTER, CHARACTERWISE_EXCLUSIVE, MOPT_NONE, 1);
+    return [[XVimArgumentEvaluator alloc] initWithWindow:self.window];
 }
 
 /*
@@ -157,7 +153,7 @@
 - (XVimEvaluator*)g{
     [self.argumentString appendString:@"g"];
     self.onChildCompleteHandler = @selector(onComplete_g:);
-    return [[[XVimGMotionEvaluator alloc] initWithWindow:self.window] autorelease];
+    return [[XVimGMotionEvaluator alloc] initWithWindow:self.window];
 }
 
 - (XVimEvaluator*)onComplete_g:(XVimGMotionEvaluator*)childEvaluator{
@@ -215,8 +211,7 @@
     if( opposite ){
         m.motion = (m.motion == MOTION_SEARCH_FORWARD) ? MOTION_SEARCH_BACKWARD : MOTION_SEARCH_FORWARD;
     }
-    [_motion release];
-    _motion = [m retain];
+    _motion = m;
     return [self _motionFixed:m];
 }
 
@@ -240,15 +235,15 @@
 - (XVimEvaluator*)t{
     [self.argumentString appendString:@"t"];
     self.onChildCompleteHandler = @selector(onComplete_fFtT:);
-    _motion = [XVIM_MAKE_MOTION(MOTION_TILL_NEXT_CHARACTER, CHARACTERWISE_INCLUSIVE, MOPT_NONE, 1) retain];
-    return [[[XVimArgumentEvaluator alloc] initWithWindow:self.window] autorelease];
+    _motion = XVIM_MAKE_MOTION(MOTION_TILL_NEXT_CHARACTER, CHARACTERWISE_INCLUSIVE, MOPT_NONE, 1);
+    return [[XVimArgumentEvaluator alloc] initWithWindow:self.window];
 }
 
 - (XVimEvaluator*)T{
     [self.argumentString appendString:@"T"];
     self.onChildCompleteHandler = @selector(onComplete_fFtT:);
-    _motion = [XVIM_MAKE_MOTION(MOTION_TILL_PREV_CHARACTER, CHARACTERWISE_EXCLUSIVE, MOPT_NONE, 1) retain];
-    return [[[XVimArgumentEvaluator alloc] initWithWindow:self.window] autorelease];
+    _motion = XVIM_MAKE_MOTION(MOTION_TILL_PREV_CHARACTER, CHARACTERWISE_EXCLUSIVE, MOPT_NONE, 1);
+    return [[XVimArgumentEvaluator alloc] initWithWindow:self.window];
 }
 
 - (XVimEvaluator*)v{
@@ -278,7 +273,7 @@
 
 - (XVimEvaluator*)z{
     [self.argumentString appendString:@"z"];
-    return [[[XVimZEvaluator alloc] initWithWindow:self.window] autorelease];
+    return [[XVimZEvaluator alloc] initWithWindow:self.window];
 }
 
 - (XVimEvaluator*)NUM0{
@@ -345,7 +340,7 @@
     }
 	
     // set the position before the jump
-    XVimMark* cur_mark = [[[XVimMark alloc] init] autorelease];
+    XVimMark* cur_mark = [[XVimMark alloc] init];
     cur_mark.line = [buffer lineNumberAtIndex:cur_pos];
     cur_mark.column = [buffer columnOfIndex:cur_pos];
     cur_mark.document = buffer.document.fileURL.path;
@@ -366,7 +361,7 @@
 - (XVimEvaluator*)SQUOTE{
     [self.argumentString appendString:@"'"];
     self.onChildCompleteHandler = @selector(onComplete_SQUOTE:);
-    return [[[XVimArgumentEvaluator alloc] initWithWindow:self.window] autorelease];
+    return [[XVimArgumentEvaluator alloc] initWithWindow:self.window];
 }
 
 - (XVimEvaluator*)onComplete_SQUOTE:(XVimArgumentEvaluator*)childEvaluator{
@@ -381,7 +376,7 @@
 - (XVimEvaluator*)BACKQUOTE{
     [self.argumentString appendString:@"`"];
     self.onChildCompleteHandler = @selector(onComplete_BACKQUOTE:);
-    return [[[XVimArgumentEvaluator alloc] initWithWindow:self.window] autorelease];
+    return [[XVimArgumentEvaluator alloc] initWithWindow:self.window];
 }
 
 - (XVimEvaluator*)onComplete_BACKQUOTE:(XVimArgumentEvaluator*)childEvaluator{

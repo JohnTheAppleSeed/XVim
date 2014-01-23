@@ -124,7 +124,7 @@ static void xvim_setSecondaryEditor(id self, SEL _cmd, IDEEditor *editor)
         if (status == nil) {
             // Insert status line
             [container setPostsFrameChangedNotifications:YES];
-            status = [[[XVimStatusLine alloc] initWithFrame:NSMakeRect(0, 0, 100, 100)] autorelease];
+            status = [[XVimStatusLine alloc] initWithFrame:NSMakeRect(0, 0, 100, 100)];
             [container addSubview:status];
             [status associateWith:container];
 

@@ -42,19 +42,21 @@ static const char *KEY_WINDOW = "xvimwindow";
 
 - (NSView *)_xvim_editorAreaAutoLayoutView
 {
-    NSView *layoutView;
-
     // The view contains editors and border view
-    object_getInstanceVariable(self, "_editorAreaAutoLayoutView", (void**)&layoutView);
+	Ivar ivar = class_getInstanceVariable([self class], [@"_editorAreaAutoLayoutView" UTF8String]);
+    NSView *layoutView = object_getIvar(self, ivar);
+	
+//    object_getInstanceVariable(self, "_editorAreaAutoLayoutView", (void**)&layoutView);
     return layoutView;
 }
 
 - (DVTBorderedView *)_xvim_debuggerBarBorderedView
 {
-    DVTBorderedView *border;
-
     // The view contains editors and border view
-    object_getInstanceVariable(self, "_debuggerBarBorderedView", (void**)&border);
+	Ivar ivar = class_getInstanceVariable([self class], [@"_debuggerBarBorderedView" UTF8String]);
+    DVTBorderedView *border = object_getIvar(self, ivar);
+	
+//    object_getInstanceVariable(self, "_debuggerBarBorderedView", (void**)&border);
     return border;
 }
 
@@ -81,7 +83,6 @@ static const char *KEY_WINDOW = "xvimwindow";
     }
 
     objc_setAssociatedObject(self, KEY_WINDOW, xvim, OBJC_ASSOCIATION_RETAIN);
-    [xvim release];
 }
 
 - (void)xvim_primitiveInvalidate

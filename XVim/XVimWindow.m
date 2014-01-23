@@ -58,7 +58,7 @@
 }
 
 @property (strong, atomic) NSEvent       *tmpBuffer;
-@property (readonly)       XVimEvaluator *currentEvaluator;
+@property (strong, readonly)       XVimEvaluator *currentEvaluator;
 
 - (void)_resetEvaluatorStack:(NSMutableArray *)stack activateNormalHandler:(BOOL)activate;
 
@@ -84,9 +84,9 @@
 {
     if (self = [super init]){
         DEBUG_LOG("Window %p created on %@", self, editorArea);
-		_staticString = [@"" retain];
+		_staticString = @"";
 		_keymapContext = [[XVimKeymapContext alloc] init];
-        _editorArea = [editorArea retain];
+        _editorArea = editorArea;
         _evaluatorStack = [[NSMutableArray alloc] init];
         _inputContext = [[NSTextInputContext alloc] initWithClient:self];
         [self _resetEvaluatorStack:_evaluatorStack activateNormalHandler:YES];
@@ -126,14 +126,6 @@
 {
     DEBUG_LOG("Window %p deleted", self);
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [_keymapContext release];
-    [_staticString release];
-    [_editorArea release];
-    [_inputContext release];
-    self.tmpBuffer = nil;
-    [_evaluatorStack release];
-    [_commandLine release];
-    [super dealloc];
 }
 
 - (void)dumpEvaluatorStack:(NSMutableArray*)stack
@@ -158,7 +150,7 @@
 {
     // Initialize evlauator stack
     [stack removeAllObjects];
-    XVimEvaluator* firstEvaluator = [[[XVimNormalEvaluator alloc] initWithWindow:self] autorelease];
+    XVimEvaluator* firstEvaluator = [[XVimNormalEvaluator alloc] initWithWindow:self];
     [stack addObject:firstEvaluator];
     if (activate) {
         [firstEvaluator becameHandler];
@@ -281,17 +273,16 @@
     [xvim appendOperationKeyStroke:[keyStroke xvimString]];
 
     // Evaluate key stroke
-    XVimEvaluator* currentEvaluator = [[evaluatorStack lastObject] retain];
+    XVimEvaluator* currentEvaluator = [evaluatorStack lastObject];
     currentEvaluator.window = self;
 
     XVimEvaluator* nextEvaluator = [currentEvaluator eval:keyStroke];
-    [currentEvaluator release];
 
     // Manipulate evaluator stack
     while(YES){
         if( nil == nextEvaluator || nextEvaluator == [XVimEvaluator popEvaluator]){
             // current evaluator finished its task
-            XVimEvaluator* completeEvaluator = [[[evaluatorStack lastObject] retain] autorelease]; // We have to retain here not to be dealloced in didEndHandler method.
+            XVimEvaluator* completeEvaluator = [evaluatorStack lastObject]; // We have to retain here not to be dealloced in didEndHandler method.
             [evaluatorStack removeLastObject]; // remove current evaluator from the stack
             [completeEvaluator didEndHandler];
             if( [evaluatorStack count] == 0 ){
@@ -308,7 +299,8 @@
                     break;
                 }
                 SEL onCompleteHandler = currentEvaluator.onChildCompleteHandler;
-                nextEvaluator = [currentEvaluator performSelector:onCompleteHandler withObject:completeEvaluator];
+				SuppressPerformSelectorLeakWarningWithObject([currentEvaluator performSelector:onCompleteHandler withObject:completeEvaluator]);
+                nextEvaluator = performObject;
                 [currentEvaluator resetCompletionHandler];
             }
         }else if( nextEvaluator == [XVimEvaluator invalidEvaluator]){

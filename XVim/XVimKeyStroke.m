@@ -112,9 +112,9 @@
 #define XVIM_MAKE_MODIFIER(x) ((unsigned short)((KS_MODIFIER<<8) | x ))   // Crate 0xF8XX
 
 struct key_map{
-    NSString* key; // Human readable key expression
+    __unsafe_unretained NSString* key; // Human readable key expression
     unichar c;     // Char code
-    NSString* selector; // Selector to be called for evaluators
+    __unsafe_unretained NSString* selector; // Selector to be called for evaluators
 };
 
 static struct key_map key_maps[] = {
@@ -373,7 +373,7 @@ NS_INLINE BOOL isModifier(unichar c)
 
 static XVimString *MakeXVimString(unichar character, unsigned short modifier)
 {
-    NSMutableString *str = [[[NSMutableString alloc] init] autorelease];
+    NSMutableString *str = [[NSMutableString alloc] init];
 
     init_maps();
 
@@ -458,7 +458,7 @@ static XVimString *XVimStringFromKeyNotationImpl(NSString *string, NSUInteger *i
 XVimString* XVimStringFromKeyNotation(NSString* notation){
     NSUInteger index = 0;
     NSUInteger len = notation.length;
-    NSMutableString* str = [[[NSMutableString alloc] init] autorelease];
+    NSMutableString* str = [[NSMutableString alloc] init];
     while (index < len){
         XVimString* oneKey = XVimStringFromKeyNotationImpl(notation, &index);
         if( oneKey == nil ){
@@ -470,7 +470,7 @@ XVimString* XVimStringFromKeyNotation(NSString* notation){
 }
 
 XVimString* XVimStringFromKeyStrokes(NSArray* strokes){
-    NSMutableString* str = [[[NSMutableString alloc] init] autorelease];
+    NSMutableString* str = [[NSMutableString alloc] init];
     for( XVimKeyStroke* stroke in strokes ){
         [str appendString:[stroke xvimString]];
     }
@@ -478,7 +478,7 @@ XVimString* XVimStringFromKeyStrokes(NSArray* strokes){
 }
 
 NSArray* XVimKeyStrokesFromXVimString(XVimString* string){
-    NSMutableArray* array = [[[NSMutableArray alloc] init] autorelease];
+    NSMutableArray* array = [[NSMutableArray alloc] init];
     for( NSUInteger i = 0; i < string.length; i++ ){
         unichar c1 = [string characterAtIndex:i];
         unichar c2;
@@ -490,7 +490,7 @@ NSArray* XVimKeyStrokesFromXVimString(XVimString* string){
             c1 = 0;
         }
 
-        XVimKeyStroke* stroke = [[[XVimKeyStroke alloc] initWithCharacter:c2 modifier:c1] autorelease];
+        XVimKeyStroke* stroke = [[XVimKeyStroke alloc] initWithCharacter:c2 modifier:c1];
         [array addObject:stroke];
     }
     return array;
@@ -502,7 +502,7 @@ NSArray* XVimKeyStrokesFromKeyNotation(NSString* notation){
 
 NSString* XVimKeyNotationFromXVimString(XVimString* string){
     NSArray* array = XVimKeyStrokesFromXVimString(string);
-    NSMutableString* str = [[[NSMutableString alloc] init] autorelease];
+    NSMutableString* str = [[NSMutableString alloc] init];
     for( XVimKeyStroke* stroke in array ){
         [str appendString:[stroke keyNotation]];
     }
@@ -526,7 +526,7 @@ NSString* XVimKeyNotationFromXVimString(XVimString* string){
         c = '\t';
     }
     mod = NSMOD2XVIMMOD(mod);
-    return [[[XVimKeyStroke alloc] initWithCharacter:c modifier:(unsigned char)mod] autorelease];
+    return [[XVimKeyStroke alloc] initWithCharacter:c modifier:(unsigned char)mod];
 }
 
 - (XVimString*)toXVimString{
@@ -611,7 +611,7 @@ NSString* XVimKeyNotationFromXVimString(XVimString* string){
     }
     [str appendString:[self keyNotation]];
 
-    return [str autorelease];
+    return str;
 }
 
 - (BOOL)isPrintable
@@ -648,7 +648,7 @@ NSString* XVimKeyNotationFromXVimString(XVimString* string){
     if (_modifier || !isPrintable(charcode)) {
         [keyStr appendString:@">"];
     }
-    return [keyStr autorelease];
+    return keyStr;
 }
 
 - (SEL)selector

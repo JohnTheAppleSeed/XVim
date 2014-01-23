@@ -29,10 +29,6 @@
     return self;
 }
 
-- (void)dealloc{
-    [_string release];
-    [super dealloc];
-}
 
 -(void) appendXVimString:(XVimString*)string{
     [self.string appendString:string];
@@ -132,7 +128,7 @@
 
 static const NSString* s_enum_registers = @"\"0123456789abcdefghijklmnopqrstuvwxyz-*.:%/+~";
 
-#define XVimRegisterWithKeyName(name) [[[XVimRegister alloc] init] autorelease], name
+#define XVimRegisterWithKeyName(name) [[XVimRegister alloc] init], name
 - (id)init{
     if( self = [super init] ){
 		_registers =
@@ -176,14 +172,14 @@ static const NSString* s_enum_registers = @"\"0123456789abcdefghijklmnopqrstuvwx
          XVimRegisterWithKeyName(@"x"),
          XVimRegisterWithKeyName(@"y"),
          XVimRegisterWithKeyName(@"z"),
-         [[[XVimReadonlyRegister alloc] init] autorelease],    @":",
-         [[[XVimReadonlyRegister alloc] init] autorelease],    @".",
-         [[[XVimCurrentFileRegister alloc] init] autorelease], @"%",
-         [[[XVimReadonlyRegister alloc] init] autorelease],    @"#",
-         [[[XVimClipboardRegister alloc] init] autorelease],   @"*",
+         [[XVimReadonlyRegister alloc] init],    @":",
+         [[XVimReadonlyRegister alloc] init],    @".",
+         [[XVimCurrentFileRegister alloc] init], @"%",
+         [[XVimReadonlyRegister alloc] init],    @"#",
+         [[XVimClipboardRegister alloc] init],   @"*",
          XVimRegisterWithKeyName(@"+"),
          XVimRegisterWithKeyName(@"~"),
-         [[[XVimBlackholeRegister alloc] init] autorelease],   @"_",
+         [[XVimBlackholeRegister alloc] init],   @"_",
          XVimRegisterWithKeyName(@"/"),
           nil];
         
@@ -193,12 +189,6 @@ static const NSString* s_enum_registers = @"\"0123456789abcdefghijklmnopqrstuvwx
     return self;
 }
 
-- (void)dealloc{
-    _recordingRegisterName = nil;
-    _recordingRegister = nil;
-    _registers = nil;
-    [super dealloc];
-}
 
 // Private
 - (BOOL)isReadonly:(NSString*)name{
@@ -364,7 +354,7 @@ static const NSString* s_enum_registers = @"\"0123456789abcdefghijklmnopqrstuvwx
         [self.registers setObject:r forKey:[NSString stringWithCharacters:&nextReg length:1]];
     }
     // We can not change "1 register content because it is refered by "2 now because of the rotation
-    XVimRegister* newReg = [[[XVimRegister alloc] init] autorelease];
+    XVimRegister* newReg = [[XVimRegister alloc] init];
     [self.registers setObject:newReg forKey:@"1"];
     [self setXVimString:string withType:type forReg:@"1"];
     

@@ -270,7 +270,6 @@ NSString * const XVimBufferKey = @"XVimBufferKey";
     // So use obj-c runtime method to get instance varialbe by its name.
 	Ivar ivar = class_getInstanceVariable([console class], [@"_consoleView" UTF8String]);
     IDEConsoleTextView* pView = object_getIvar(console, ivar);
-//    object_getInstanceVariable(console , "_consoleView" , (void**)&pView);
     
     va_list argumentList;
     va_start(argumentList, fmt);

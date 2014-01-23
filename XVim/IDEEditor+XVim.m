@@ -135,7 +135,7 @@ static void xvim_setSecondaryEditor(id self, SEL _cmd, IDEEditor *editor)
 
             // For % register and to notify contents of editor is changed
             [self addObserver:[XVim instance] forKeyPath:@"document" options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew context:nil];
-            objc_setAssociatedObject(self, DID_REGISTER_OBSERVER_KEY, @YES, OBJC_ASSOCIATION_ASSIGN);
+            objc_setAssociatedObject(self, DID_REGISTER_OBSERVER_KEY, @YES, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         }
     }
     //---- TO HERE ----

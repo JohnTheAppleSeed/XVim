@@ -46,7 +46,6 @@ static const char *KEY_WINDOW = "xvimwindow";
 	Ivar ivar = class_getInstanceVariable([self class], [@"_editorAreaAutoLayoutView" UTF8String]);
     NSView *layoutView = object_getIvar(self, ivar);
 	
-//    object_getInstanceVariable(self, "_editorAreaAutoLayoutView", (void**)&layoutView);
     return layoutView;
 }
 
@@ -56,7 +55,6 @@ static const char *KEY_WINDOW = "xvimwindow";
 	Ivar ivar = class_getInstanceVariable([self class], [@"_debuggerBarBorderedView" UTF8String]);
     DVTBorderedView *border = object_getIvar(self, ivar);
 	
-//    object_getInstanceVariable(self, "_debuggerBarBorderedView", (void**)&border);
     return border;
 }
 

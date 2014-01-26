@@ -90,8 +90,7 @@ static XVimEvaluator *_popEvaluator = nil;
 	SEL handler = keyStroke.selector;
     if ([self respondsToSelector:handler]) {
 		TRACE_LOG(@"Calling SELECTOR %@", NSStringFromSelector(handler));
-        SuppressPerformSelectorLeakWarningWithObject([self performSelector:handler]);
-		return performObject;
+        return SuppressPerformSelectorLeakWarning([self performSelector:handler]);
 	} else {
         TRACE_LOG(@"SELECTOR %@ not found", NSStringFromSelector(handler));
         return [self defaultNextEvaluator];

@@ -103,8 +103,7 @@
 	XVimCommandField *commandField = self.window.commandLine.commandField;
     SEL sel = keyStroke.selector;
     if ([self respondsToSelector:sel]) {
-		SuppressPerformSelectorLeakWarningWithObject([self performSelector:sel])
-		next = performObject;
+		next = SuppressPerformSelectorLeakWarning([self performSelector:sel]);
 	}
 	else{
 		[commandField handleKeyStroke:keyStroke inWindow:self.window];

@@ -224,8 +224,7 @@
 
     SEL keySelector = keyStroke.selector;
     if ([self respondsToSelector:keySelector]) {
-		SuppressPerformSelectorLeakWarningWithObject([self performSelector:keySelector]);
-        nextEvaluator = performObject;
+        nextEvaluator = SuppressPerformSelectorLeakWarning([self performSelector:keySelector]);
     } else {
         if(self.movementKeyPressed) {
             // Flag movement key as not pressed until the next movement key is pressed

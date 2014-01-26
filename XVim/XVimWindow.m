@@ -299,8 +299,7 @@
                     break;
                 }
                 SEL onCompleteHandler = currentEvaluator.onChildCompleteHandler;
-				SuppressPerformSelectorLeakWarningWithObject([currentEvaluator performSelector:onCompleteHandler withObject:completeEvaluator]);
-                nextEvaluator = performObject;
+                nextEvaluator = SuppressPerformSelectorLeakWarning([currentEvaluator performSelector:onCompleteHandler withObject:completeEvaluator])
                 [currentEvaluator resetCompletionHandler];
             }
         }else if( nextEvaluator == [XVimEvaluator invalidEvaluator]){

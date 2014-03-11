@@ -48,12 +48,6 @@
     return self;
 }
 
-- (void)dealloc
-{
-    [_undoManager release];
-    [_values release];
-    [super dealloc];
-}
 
 - (void)setStartIndex:(NSUInteger)index
 {
@@ -82,11 +76,11 @@
 - (void)_undoOp:(NSUInteger)i textStorage:(NSTextStorage *)ts range:(NSRange)range
 {
     NSUInteger index= 3 * i + 2;
-    NSAttributedString *oldText = [_values objectAtIndex:index];
+    NSAttributedString *oldText = _values[index];
     NSAttributedString *newText = [ts _undoRedoAttributedSubstringFromRange:range];
 
     [ts replaceCharactersInRange:range withAttributedString:oldText];
-    [_values replaceObjectAtIndex:index withObject:newText];
+    _values[index] = newText;
 }
 
 - (void)undoRedo:(XVimBuffer *)buffer view:(XVimView *)xview
@@ -100,11 +94,11 @@
         [ts beginEditing];
         if ([_undoManager isUndoing]) {
             for (NSUInteger i = count; i-- > 0; ) {
-                [self _undoOp:i textStorage:ts range:[[_values objectAtIndex:3 * i + 1] rangeValue]];
+                [self _undoOp:i textStorage:ts range:[_values[3 * i + 1] rangeValue]];
             }
         } else {
             for (NSUInteger i = 0; i < count; i ++ ) {
-                [self _undoOp:i textStorage:ts range:[[_values objectAtIndex:3 * i + 0] rangeValue]];
+                [self _undoOp:i textStorage:ts range:[_values[3 * i + 0] rangeValue]];
             }
         }
         [ts endEditing];
@@ -119,7 +113,7 @@
 
 - (void)registerForBuffer:(XVimBuffer *)buffer
 {
-    _undoManager = [buffer.undoManager retain];
+    _undoManager = buffer.undoManager;
     [_undoManager registerUndoWithTarget:buffer selector:@selector(undoRedo:) object:self];
 }
 

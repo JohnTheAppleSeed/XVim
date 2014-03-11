@@ -19,6 +19,12 @@
 #endif
 #endif
 
+#define SuppressPerformSelectorLeakWarning(Stuff) \
+_Pragma("clang diagnostic push") \
+_Pragma("clang diagnostic ignored \"-Warc-performSelector-leaks\"") \
+Stuff; \
+_Pragma("clang diagnostic pop")
+
 typedef NS_ENUM(uint8_t, XVimInsertionPoint) {
     XVIM_INSERT_DEFAULT,
     XVIM_INSERT_APPEND,

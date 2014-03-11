@@ -43,9 +43,7 @@
     static NSString* text_object_ya_result0 = @"(aaa)aaa(aaa)aaa";
     
     // Text Objects(TODO: with Numeric Arg)
-    return [NSArray arrayWithObjects:
-        // (), b
-        XVimMakeTestCase(text_object0, 5, 0, @"di(", text_object_i_result0 , 4, 0),
+    return @[XVimMakeTestCase(text_object0, 5, 0, @"di(", text_object_i_result0 , 4, 0),
         XVimMakeTestCase(text_object0, 5, 0, @"di)", text_object_i_result0 , 4, 0),
         XVimMakeTestCase(text_object0, 5, 0, @"da(", text_object_a_result0 , 3, 0),
         XVimMakeTestCase(text_object0, 5, 0, @"da)", text_object_a_result0 , 3, 0),
@@ -93,7 +91,6 @@
         
         // w
         XVimMakeTestCase(text_object7, 5, 0, @"diw", text_object_i_result7 , 4, 0),
-        XVimMakeTestCase(text_object7, 5, 0, @"daw", text_object_a_result7 , 4, 0),
-    nil];
+        XVimMakeTestCase(text_object7, 5, 0, @"daw", text_object_a_result7 , 4, 0)];
 }
 @end

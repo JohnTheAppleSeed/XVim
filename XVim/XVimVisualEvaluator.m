@@ -42,7 +42,6 @@ static NSString* MODE_STRINGS[] = {@"", @"-- VISUAL --", @"-- VISUAL LINE --", @
 
     if (vi->mode == XVIM_VISUAL_NONE) {
         [window errorMessage:@"no previous visual state" ringBell:YES];
-        [self release];
         return nil;
     }
 
@@ -54,7 +53,7 @@ static NSString* MODE_STRINGS[] = {@"", @"-- VISUAL --", @"-- VISUAL LINE --", @
     
 - (id)initWithWindow:(XVimWindow *)window mode:(XVimVisualMode)mode {
     NSTextView *sourceView = window.currentView.textView;
-    NSUInteger start = [[sourceView.selectedRanges objectAtIndex:0] rangeValue].location;
+    NSUInteger start = [(sourceView.selectedRanges)[0] rangeValue].location;
     NSUInteger end = NSMaxRange([sourceView.selectedRanges.lastObject rangeValue]);
     XVimBuffer *buffer = window.currentBuffer;
 
@@ -164,18 +163,18 @@ static NSString* MODE_STRINGS[] = {@"", @"-- VISUAL --", @"-- VISUAL LINE --", @
     // FIXME: doesn't work properly, especially in block mode
     self.onChildCompleteHandler = @selector(onComplete_ai:);
     [self.argumentString appendString:@"a"];
-	return [[[XVimTextObjectEvaluator alloc] initWithWindow:self.window inner:NO] autorelease];
+	return [[XVimTextObjectEvaluator alloc] initWithWindow:self.window inner:NO];
 }
 
 - (XVimEvaluator*)A{
-    return [[[XVimInsertEvaluator alloc] initWithWindow:self.window oneCharMode:NO mode:XVIM_INSERT_APPEND] autorelease];
+    return [[XVimInsertEvaluator alloc] initWithWindow:self.window oneCharMode:NO mode:XVIM_INSERT_APPEND];
 }
 
 - (XVimEvaluator*)i{
     // FIXME: doesn't work properly, especially not in block mode
     self.onChildCompleteHandler = @selector(onComplete_ai:);
     [self.argumentString appendString:@"i"];
-    return [[[XVimTextObjectEvaluator alloc] initWithWindow:self.window inner:YES] autorelease];
+    return [[XVimTextObjectEvaluator alloc] initWithWindow:self.window inner:YES];
 }
 
 
@@ -191,9 +190,9 @@ static NSString* MODE_STRINGS[] = {@"", @"-- VISUAL --", @"-- VISUAL LINE --", @
 
 - (XVimEvaluator*)c{
     if (self.currentView.inBlockMode) {
-        return [[[XVimInsertEvaluator alloc] initWithWindow:self.window oneCharMode:NO mode:XVIM_INSERT_BLOCK_KILL] autorelease];
+        return [[XVimInsertEvaluator alloc] initWithWindow:self.window oneCharMode:NO mode:XVIM_INSERT_BLOCK_KILL];
     }
-    XVimDeleteEvaluator* eval = [[[XVimDeleteEvaluator alloc] initWithWindow:self.window insertModeAtCompletion:YES] autorelease];
+    XVimDeleteEvaluator* eval = [[XVimDeleteEvaluator alloc] initWithWindow:self.window insertModeAtCompletion:YES];
     return [eval executeOperationWithMotion:XVIM_MAKE_MOTION(MOTION_NONE, CHARACTERWISE_EXCLUSIVE, MOPT_NONE, 1)];
 }
 
@@ -205,7 +204,7 @@ static NSString* MODE_STRINGS[] = {@"", @"-- VISUAL --", @"-- VISUAL LINE --", @
         return [self c];
     }
     [self performSelector:@selector(DOLLAR)];
-    return [[[XVimInsertEvaluator alloc] initWithWindow:self.window oneCharMode:NO mode:XVIM_INSERT_BLOCK_KILL] autorelease];
+    return [[XVimInsertEvaluator alloc] initWithWindow:self.window oneCharMode:NO mode:XVIM_INSERT_BLOCK_KILL];
 }
 
 - (XVimEvaluator*)C_b{
@@ -219,7 +218,7 @@ static NSString* MODE_STRINGS[] = {@"", @"-- VISUAL --", @"-- VISUAL LINE --", @
 }
 
 - (XVimEvaluator*)d{
-    XVimDeleteEvaluator* eval = [[[XVimDeleteEvaluator alloc] initWithWindow:self.window] autorelease];
+    XVimDeleteEvaluator* eval = [[XVimDeleteEvaluator alloc] initWithWindow:self.window];
     return [eval executeOperationWithMotion:XVIM_MAKE_MOTION(MOTION_NONE, CHARACTERWISE_INCLUSIVE, MOPT_NONE, 0)];
 }
 
@@ -247,7 +246,7 @@ static NSString* MODE_STRINGS[] = {@"", @"-- VISUAL --", @"-- VISUAL LINE --", @
 - (XVimEvaluator*)g{
     [self.argumentString appendString:@"g"];
     self.onChildCompleteHandler = @selector(g_completed:);
-    return [[[XVimGVisualEvaluator alloc] initWithWindow:self.window] autorelease];
+    return [[XVimGVisualEvaluator alloc] initWithWindow:self.window];
 }
 
 - (XVimEvaluator *)g_completed:(XVimEvaluator *)childEvaluator{
@@ -260,13 +259,13 @@ static NSString* MODE_STRINGS[] = {@"", @"-- VISUAL --", @"-- VISUAL LINE --", @
 
 - (XVimEvaluator*)I{
     if (!self.currentView.inBlockMode) {
-        return [[[XVimInsertEvaluator alloc] initWithWindow:self.window oneCharMode:NO mode:XVIM_INSERT_BEFORE_FIRST_NONBLANK] autorelease];
+        return [[XVimInsertEvaluator alloc] initWithWindow:self.window oneCharMode:NO mode:XVIM_INSERT_BEFORE_FIRST_NONBLANK];
     }
-    return [[[XVimInsertEvaluator alloc] initWithWindow:self.window oneCharMode:NO mode:XVIM_INSERT_DEFAULT] autorelease];
+    return [[XVimInsertEvaluator alloc] initWithWindow:self.window oneCharMode:NO mode:XVIM_INSERT_DEFAULT];
 }
 
 - (XVimEvaluator*)J{
-    XVimJoinEvaluator* eval = [[[XVimJoinEvaluator alloc] initWithWindow:self.window addSpace:YES] autorelease];
+    XVimJoinEvaluator* eval = [[XVimJoinEvaluator alloc] initWithWindow:self.window addSpace:YES];
     return [eval executeOperationWithMotion:XVIM_MAKE_MOTION(MOTION_NONE, CHARACTERWISE_EXCLUSIVE, MOPT_NONE, self.numericArg)];
 }
 
@@ -274,7 +273,7 @@ static NSString* MODE_STRINGS[] = {@"", @"-- VISUAL --", @"-- VISUAL LINE --", @
     // 'm{letter}' sets a local mark.
     [self.argumentString appendString:@"m"];
     self.onChildCompleteHandler = @selector(m_completed:);
-	return [[[XVimMarkSetEvaluator alloc] initWithWindow:self.window] autorelease];
+	return [[XVimMarkSetEvaluator alloc] initWithWindow:self.window];
 }
 
 - (XVimEvaluator*)m_completed:(XVimEvaluator*)childEvaluator{
@@ -329,12 +328,12 @@ static NSString* MODE_STRINGS[] = {@"", @"-- VISUAL --", @"-- VISUAL LINE --", @
 }
 
 - (XVimEvaluator*)u{
-    XVimSwapCharsEvaluator *eval = [[[XVimSwapCharsEvaluator alloc] initWithWindow:self.window mode:XVIM_BUFFER_SWAP_LOWER] autorelease];
+    XVimSwapCharsEvaluator *eval = [[XVimSwapCharsEvaluator alloc] initWithWindow:self.window mode:XVIM_BUFFER_SWAP_LOWER];
     return [eval executeOperationWithMotion:XVIM_MAKE_MOTION(MOTION_NONE, CHARACTERWISE_INCLUSIVE, MOPT_NONE, self.numericArg)];
 }
 
 - (XVimEvaluator*)U{
-    XVimSwapCharsEvaluator *eval = [[[XVimSwapCharsEvaluator alloc] initWithWindow:self.window mode:XVIM_BUFFER_SWAP_UPPER] autorelease];
+    XVimSwapCharsEvaluator *eval = [[XVimSwapCharsEvaluator alloc] initWithWindow:self.window mode:XVIM_BUFFER_SWAP_UPPER];
     return [eval executeOperationWithMotion:XVIM_MAKE_MOTION(MOTION_NONE, CHARACTERWISE_INCLUSIVE, MOPT_NONE, self.numericArg)];
 }
 
@@ -404,7 +403,7 @@ static NSString* MODE_STRINGS[] = {@"", @"-- VISUAL --", @"-- VISUAL LINE --", @
     [self.argumentString appendString:@"\""];
     self.onChildCompleteHandler = @selector(onComplete_DQUOTE:);
     _waitForArgument = YES;
-    return  [[[XVimRegisterEvaluator alloc] initWithWindow:self.window] autorelease];
+    return  [[XVimRegisterEvaluator alloc] initWithWindow:self.window];
 }
 
 - (XVimEvaluator*)onComplete_DQUOTE:(XVimRegisterEvaluator*)childEvaluator{
@@ -444,7 +443,7 @@ TODO: This block is from commit 42498.
 */
 
 - (XVimEvaluator*)EQUAL{
-    XVimEqualEvaluator* eval = [[[XVimEqualEvaluator alloc] initWithWindow:self.window] autorelease];
+    XVimEqualEvaluator* eval = [[XVimEqualEvaluator alloc] initWithWindow:self.window];
     return [eval executeOperationWithMotion:XVIM_MAKE_MOTION(MOTION_NONE, CHARACTERWISE_EXCLUSIVE, MOPT_NONE, [self numericArg])];
 }
 
@@ -489,12 +488,12 @@ TODO: This block is from commit 42498.
 }
 
 - (XVimEvaluator*)GREATERTHAN{
-    XVimShiftEvaluator* eval = [[[XVimShiftEvaluator alloc] initWithWindow:self.window unshift:NO] autorelease];
+    XVimShiftEvaluator* eval = [[XVimShiftEvaluator alloc] initWithWindow:self.window unshift:NO];
     return [eval executeOperationWithMotion:XVIM_MAKE_MOTION(MOTION_NONE, CHARACTERWISE_INCLUSIVE, MOPT_NONE, self.numericArg)];
 }
 
 - (XVimEvaluator*)LESSTHAN{
-    XVimShiftEvaluator* eval = [[[XVimShiftEvaluator alloc] initWithWindow:self.window unshift:YES] autorelease];
+    XVimShiftEvaluator* eval = [[XVimShiftEvaluator alloc] initWithWindow:self.window unshift:YES];
     return [eval executeOperationWithMotion:XVIM_MAKE_MOTION(MOTION_NONE, CHARACTERWISE_INCLUSIVE, MOPT_NONE, self.numericArg)];
 }
 
@@ -571,7 +570,7 @@ TODO: This block is from commit 42498.
 }
 
 - (XVimEvaluator*)TILDE{
-    XVimSwapCharsEvaluator *eval = [[[XVimSwapCharsEvaluator alloc] initWithWindow:self.window mode:XVIM_BUFFER_SWAP_CASE] autorelease];
+    XVimSwapCharsEvaluator *eval = [[XVimSwapCharsEvaluator alloc] initWithWindow:self.window mode:XVIM_BUFFER_SWAP_CASE];
     return [eval executeOperationWithMotion:XVIM_MAKE_MOTION(MOTION_NONE, CHARACTERWISE_EXCLUSIVE, MOPT_NONE, [self numericArg])];
 }
 

@@ -29,7 +29,7 @@
 	SEL handler = keyStroke.selector;
 	if ([self respondsToSelector:handler]) {
 		TRACE_LOG(@"Calling SELECTOR %@", NSStringFromSelector(handler));
-        return [self performSelector:handler];
+		return SuppressPerformSelectorLeakWarning([self performSelector:handler]);
     }
 
     if( keyStroke.modifier == 0 ){

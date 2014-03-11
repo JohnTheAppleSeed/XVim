@@ -29,10 +29,6 @@
     return self;
 }
 
-- (void)dealloc{
-    [_string release];
-    [super dealloc];
-}
 
 -(void) appendXVimString:(XVimString*)string{
     [self.string appendString:string];
@@ -76,7 +72,7 @@
 }
 
 -(void) setXVimString:(XVimString*)string{
-    [[NSPasteboard generalPasteboard] declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
+    [[NSPasteboard generalPasteboard] declareTypes:@[NSStringPboardType] owner:nil];
     [[NSPasteboard generalPasteboard] setString:string forType:NSStringPboardType];
     return;
 }
@@ -132,7 +128,7 @@
 
 static const NSString* s_enum_registers = @"\"0123456789abcdefghijklmnopqrstuvwxyz-*.:%/+~";
 
-#define XVimRegisterWithKeyName(name) [[[XVimRegister alloc] init] autorelease], name
+#define XVimRegisterWithKeyName(name) [[XVimRegister alloc] init], name
 - (id)init{
     if( self = [super init] ){
 		_registers =
@@ -176,14 +172,14 @@ static const NSString* s_enum_registers = @"\"0123456789abcdefghijklmnopqrstuvwx
          XVimRegisterWithKeyName(@"x"),
          XVimRegisterWithKeyName(@"y"),
          XVimRegisterWithKeyName(@"z"),
-         [[[XVimReadonlyRegister alloc] init] autorelease],    @":",
-         [[[XVimReadonlyRegister alloc] init] autorelease],    @".",
-         [[[XVimCurrentFileRegister alloc] init] autorelease], @"%",
-         [[[XVimReadonlyRegister alloc] init] autorelease],    @"#",
-         [[[XVimClipboardRegister alloc] init] autorelease],   @"*",
+         [[XVimReadonlyRegister alloc] init],    @":",
+         [[XVimReadonlyRegister alloc] init],    @".",
+         [[XVimCurrentFileRegister alloc] init], @"%",
+         [[XVimReadonlyRegister alloc] init],    @"#",
+         [[XVimClipboardRegister alloc] init],   @"*",
          XVimRegisterWithKeyName(@"+"),
          XVimRegisterWithKeyName(@"~"),
-         [[[XVimBlackholeRegister alloc] init] autorelease],   @"_",
+         [[XVimBlackholeRegister alloc] init],   @"_",
          XVimRegisterWithKeyName(@"/"),
           nil];
         
@@ -193,12 +189,6 @@ static const NSString* s_enum_registers = @"\"0123456789abcdefghijklmnopqrstuvwx
     return self;
 }
 
-- (void)dealloc{
-    _recordingRegisterName = nil;
-    _recordingRegister = nil;
-    _registers = nil;
-    [super dealloc];
-}
 
 // Private
 - (BOOL)isReadonly:(NSString*)name{
@@ -253,7 +243,7 @@ static const NSString* s_enum_registers = @"\"0123456789abcdefghijklmnopqrstuvwx
     }
     // Always lowercase
     name = [name lowercaseString];
-    return [self.registers objectForKey:name];
+    return (self.registers)[name];
 }
 
 - (BOOL)isValidForYank:(NSString*)name{
@@ -305,7 +295,7 @@ static const NSString* s_enum_registers = @"\"0123456789abcdefghijklmnopqrstuvwx
         [self setXVimString:string withType:type forReg:@"0"];
         
         // "" register should point to "0
-        [self.registers setObject:[self registerByName:@"0"] forKey:@"\""];
+        (self.registers)[@"\""] = [self registerByName:@"0"];
         
         if( [[XVim instance].options clipboardHasUnnamed] ){
             // Update clipboard register too
@@ -317,7 +307,7 @@ static const NSString* s_enum_registers = @"\"0123456789abcdefghijklmnopqrstuvwx
         [self setXVimString:string withType:type forReg:@"0"];
         
         // "" register should point to "0
-        [self.registers setObject:[self registerByName:@"0"] forKey:@"\""];
+        (self.registers)[@"\""] = [self registerByName:@"0"];
     }else{
         // When any other register is specified
         // Update reigster content
@@ -327,7 +317,7 @@ static const NSString* s_enum_registers = @"\"0123456789abcdefghijklmnopqrstuvwx
             [self setXVimString:string withType:type forReg:name];
         }
         // "" register should point to the updated register
-        [self.registers setObject:[self registerByName:name] forKey:@"\""];
+        (self.registers)[@"\""] = [self registerByName:name];
     }
 }
 
@@ -361,15 +351,15 @@ static const NSString* s_enum_registers = @"\"0123456789abcdefghijklmnopqrstuvwx
     for( unichar n = '8'; n >= '1'; n-- ){
         XVimRegister* r = [self registerByName:[NSString stringWithCharacters:&n length:1]];
         unichar nextReg = n+1;
-        [self.registers setObject:r forKey:[NSString stringWithCharacters:&nextReg length:1]];
+        (self.registers)[[NSString stringWithCharacters:&nextReg length:1]] = r;
     }
     // We can not change "1 register content because it is refered by "2 now because of the rotation
-    XVimRegister* newReg = [[[XVimRegister alloc] init] autorelease];
-    [self.registers setObject:newReg forKey:@"1"];
+    XVimRegister* newReg = [[XVimRegister alloc] init];
+    (self.registers)[@"1"] = newReg;
     [self setXVimString:string withType:type forReg:@"1"];
     
     // Update unnamed register
-    [self.registers setObject:newReg forKey:@"\""];
+    (self.registers)[@"\""] = newReg;
 }
 
 - (void)textInserted:(XVimString*)string withType:(TEXT_TYPE)type{
@@ -421,7 +411,7 @@ static const NSString* s_enum_registers = @"\"0123456789abcdefghijklmnopqrstuvwx
 - (void)enumerateRegisters:(void (^)(NSString* name, XVimRegister* reg))block{
     for( NSUInteger i = 0 ; i < s_enum_registers.length; i++ ){
         NSString* key = [s_enum_registers substringWithRange:NSMakeRange(i,1)];
-        block(key , [self.registers objectForKey:key]);
+        block(key , (self.registers)[key]);
     }
 }
 

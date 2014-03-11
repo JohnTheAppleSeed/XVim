@@ -39,7 +39,7 @@
         return [XVimEvaluator invalidEvaluator];
     }
 
-    XVimMark *mark = [[[XVimMark alloc] init] autorelease];
+    XVimMark *mark = [[XVimMark alloc] init];
     XVimPosition pos = xview.insertionPosition;
 
     mark.line = pos.line;

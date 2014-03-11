@@ -56,33 +56,22 @@
         _mode = mode;
         _blockEditColumn = NSNotFound;
         _blockLines = XVimMakeRange(NSNotFound, NSNotFound);
-        _lastInsertedText = [@"" retain];
+        _lastInsertedText = @"";
         _oneCharMode = oneCharMode;
         _movementKeyPressed = NO;
         _insertedEventsAbort = NO;
         _enoughBufferForReplace = YES;
-        _cancelKeys = [[NSArray alloc] initWithObjects:
-                       [NSValue valueWithPointer:@selector(ESC:)],
+        _cancelKeys = @[[NSValue valueWithPointer:@selector(ESC:)],
                        [NSValue valueWithPointer:@selector(C_LSQUAREBRACKET:)],
-                       [NSValue valueWithPointer:@selector(C_c:)],
-                       nil];
-        _movementKeys = [[NSArray alloc] initWithObjects:
-                         [NSValue valueWithPointer:@selector(Up:)],
+                       [NSValue valueWithPointer:@selector(C_c:)]];
+        _movementKeys = @[[NSValue valueWithPointer:@selector(Up:)],
                          [NSValue valueWithPointer:@selector(Down:)],
                          [NSValue valueWithPointer:@selector(Left:)],
-                         [NSValue valueWithPointer:@selector(Right:)],
-                         nil];
+                         [NSValue valueWithPointer:@selector(Right:)]];
     }
     return self;
 }
 
-- (void)dealloc
-{
-    [_lastInsertedText release];
-    [_cancelKeys release];
-    [_movementKeys release];
-    [super dealloc];
-}
 
 - (NSString*)modeString{
 	return @"-- INSERT --";
@@ -235,7 +224,7 @@
 
     SEL keySelector = keyStroke.selector;
     if ([self respondsToSelector:keySelector]) {
-        nextEvaluator = [self performSelector:keySelector];
+        nextEvaluator = SuppressPerformSelectorLeakWarning([self performSelector:keySelector]);
     } else {
         if(self.movementKeyPressed) {
             // Flag movement key as not pressed until the next movement key is pressed
@@ -266,7 +255,7 @@
             if (keyStroke.isPrintable){
                 [xview.textView insertText:keyStroke.xvimString];
             }else{
-                [xview.textView interpretKeyEvents:[NSArray arrayWithObject:event]];
+                [xview.textView interpretKeyEvents:@[event]];
             }
         }
     }
@@ -275,7 +264,7 @@
 
 - (XVimEvaluator*)C_o{
     self.onChildCompleteHandler = @selector(onC_oComplete:);
-    return [[[XVimNormalEvaluator alloc] initWithWindow:self.window] autorelease];
+    return [[XVimNormalEvaluator alloc] initWithWindow:self.window];
 }
 
 - (XVimEvaluator*)onC_oComplete:(XVimEvaluator*)childEvaluator{

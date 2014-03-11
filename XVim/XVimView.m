@@ -72,7 +72,7 @@ static char const * const XVIM_KEY_VIEW = "xvim_view";
 
 - (XVimView *)xvim_makeXVimViewInWindow:(XVimWindow *)window
 {
-    return [[[XVimView alloc] initWithView:self window:window] autorelease];
+    return [[XVimView alloc] initWithView:self window:window];
 }
 
 - (void)xvim_setSelectedRanges:(NSArray *)ranges
@@ -269,7 +269,7 @@ static char const * const XVIM_KEY_VIEW = "xvim_view";
     NSString       *_lastYankedText;
     TEXT_TYPE       _lastYankedType;
 
-    NSMutableArray *_foundRanges;
+    NSMutableArray *__unsafe_unretained _foundRanges;
 }
 @synthesize window = _window;
 @synthesize textView = _textView;
@@ -295,7 +295,7 @@ static char const * const XVIM_KEY_VIEW = "xvim_view";
         DEBUG_LOG("View %p created for %@", self, view);
 
         _textView = view;
-        _window   = [window retain];
+        _window   = window;
 
         [self _xvim_statusChanged:nil];
 
@@ -325,10 +325,6 @@ static char const * const XVIM_KEY_VIEW = "xvim_view";
         ERROR_LOG(@"Exception %@: %@", [exception name], [exception reason]);
         [Logger logStackTrace:exception];
     }
-    [_foundRanges release];
-    [_lastYankedText release];
-    [_window release];
-    [super dealloc];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
@@ -593,10 +589,10 @@ static char const * const XVIM_KEY_VIEW = "xvim_view";
     XVimBuffer *buffer = self.buffer;
 
     if (_selectionMode != XVIM_VISUAL_BLOCK) {
-        return [NSArray arrayWithObject:[NSValue valueWithRange:[self _selectedRange]]];
+        return @[[NSValue valueWithRange:[self _selectedRange]]];
     }
 
-    NSMutableArray *rangeArray = [[[NSMutableArray alloc] init] autorelease];
+    NSMutableArray *rangeArray = [[NSMutableArray alloc] init];
     XVimSelection   sel    = [self _selectedBlock];
     NSUInteger      length = buffer.length;
 
@@ -1051,7 +1047,6 @@ static char const * const XVIM_KEY_VIEW = "xvim_view";
 {
     XVimUndoOperation *op = [[XVimUndoOperation alloc] initWithIndex:_insertionPoint];
     [op registerForBuffer:self.buffer];
-    [op release];
 }
 
 - (void)__startYankWithType:(MOTION_TYPE)type
@@ -1093,8 +1088,7 @@ static char const * const XVIM_KEY_VIEW = "xvim_view";
         s = @"";
     }
 
-    [_lastYankedText release];
-    _lastYankedText = [s retain];
+    _lastYankedText = s;
     TRACE_LOG(@"YANKED STRING : %@", s);
 }
 
@@ -1168,7 +1162,6 @@ static char const * const XVIM_KEY_VIEW = "xvim_view";
         [ybuf appendString:buffer.lineEnding];
     }
 
-    [_lastYankedText release];
     _lastYankedText = ybuf;
     TRACE_LOG(@"YANKED STRING : %@", ybuf);
 }
@@ -1470,7 +1463,7 @@ static char const * const XVIM_KEY_VIEW = "xvim_view";
         NSArray   *lines     = [text componentsSeparatedByString:buffer.lineEnding];
 
         for (NSUInteger i = 0 ; i < lines.count ; i++) {
-            NSString *line = [lines objectAtIndex:i];
+            NSString *line = lines[i];
             NSUInteger targetLine = startLine + i;
             NSUInteger head = [buffer indexOfLineNumber:targetLine];
 
@@ -1502,7 +1495,6 @@ static char const * const XVIM_KEY_VIEW = "xvim_view";
         }
     }
 
-    [text release];
     [buffer endEditingAtIndex:insertionPointAfterPut];
 
     [self _moveCursor:insertionPointAfterPut preserveColumn:NO];
@@ -1552,7 +1544,7 @@ static char const * const XVIM_KEY_VIEW = "xvim_view";
     } else {
         NSArray *ranges = [self _selectedRanges];
 
-        endPos = undoPos = [[ranges objectAtIndex:0] rangeValue].location;
+        endPos = undoPos = [ranges[0] rangeValue].location;
         [buffer beginEditingAtIndex:undoPos];
         for (NSValue *v in ranges) {
             [buffer swapCharactersInRange:v.rangeValue mode:mode];
@@ -1590,7 +1582,6 @@ static char const * const XVIM_KEY_VIEW = "xvim_view";
     [buffer replaceCharactersInRange:NSMakeRange(pos, count) withString:s];
     [buffer endEditingAtIndex:pos];
 
-    [s release];
 
     [self _moveCursor:pos + count preserveColumn:NO];
     [self _syncState];
@@ -1943,7 +1934,6 @@ static char const * const XVIM_KEY_VIEW = "xvim_view";
     }
     [buffer endEditingAtIndex:NSNotFound];
 
-    [buf release];
 }
 
 - (void)doSortLines:(XVimRange)range withOptions:(XVimSortOptions)options
@@ -1994,7 +1984,7 @@ static char const * const XVIM_KEY_VIEW = "xvim_view";
         // At this point the lines are already sorted
         [lines enumerateObjectsUsingBlock:^(NSString *str, NSUInteger idx, BOOL *stop) {
             if (idx < [lines count] - 1) {
-                NSString *nextStr = [lines objectAtIndex:idx + 1];
+                NSString *nextStr = lines[idx + 1];
                 if ([str isEqualToString:nextStr]) {
                     [removeIndices addIndex:idx + 1];
                 }
@@ -2014,7 +2004,6 @@ static char const * const XVIM_KEY_VIEW = "xvim_view";
     [self _moveCursor:pos preserveColumn:NO];
     [self _syncState];
 
-    [lines release];
 }
 
 #pragma mark *** Drawing ***

@@ -15,9 +15,9 @@
 // This class represents a node in key map trie.
 
 @interface XVimKeymapNode : NSObject
-@property (nonatomic, retain) NSMutableDictionary *dict;
+@property (nonatomic, strong) NSMutableDictionary *dict;
 @property                     BOOL remap;
-@property (nonatomic, retain) XVimString* target;
+@property (nonatomic, strong) XVimString* target;
 - (BOOL)hasChild;
 @end
 
@@ -28,17 +28,12 @@
 
 - (id)init{
 	if (self = [super init]){
-		self.dict = [[[NSMutableDictionary alloc] init] autorelease];
+		self.dict = [[NSMutableDictionary alloc] init];
         self.target = nil;
 	}
 	return self;
 }
 
-- (void)dealloc{
-    self.dict = nil;
-    self.target = nil;
-    [super dealloc];
-}
 
 - (BOOL)hasChild{
     return 0 != self.dict.count;
@@ -56,21 +51,14 @@
 
 - (id)init {
 	if (self = [super init]){
-		self.inputKeys = [[[NSMutableString alloc] init] autorelease];
-		self.lastMappedKeys = [[[NSMutableString alloc] init] autorelease];
+		self.inputKeys = [[NSMutableString alloc] init];
+		self.lastMappedKeys = [[NSMutableString alloc] init];
 		self.lastMappedNode = nil;
         self.node = nil;
 	}
 	return self;
 }
 
-- (void)dealloc {
-    self.inputKeys = nil;
-	self.lastMappedKeys = nil;
-    self.lastMappedNode = nil;
-    self.node = nil;
-    [super dealloc];
-}
 
 - (void)clear {
 	[self.inputKeys setString:@""];
@@ -89,7 +77,7 @@
 
 
 @interface XVimKeymap()
-@property(retain) XVimKeymapNode* root;
+@property(strong) XVimKeymapNode* root;
 @end
 
 @implementation XVimKeymap
@@ -98,29 +86,25 @@
 - (id)init{
 	self = [super init];
 	if (self) {
-        self.root = [[[XVimKeymapNode alloc] init] autorelease];
+        self.root = [[XVimKeymapNode alloc] init];
 	}
 	return self;
 }
 
-- (void)dealloc{
-    self.root = nil;
-    [super dealloc];
-}
 
 - (void)mapsInNode:(XVimKeymapNode*)node :(NSString*)mappingKey :(NSMutableDictionary*)dictionary{
     if( node.target != nil ){
-        [dictionary setObject:node.target forKey:mappingKey];
+        dictionary[mappingKey] = node.target;
     }
     for(XVimKeyStroke* key in node.dict){
-        XVimKeymapNode* next = [node.dict objectForKey:key];
+        XVimKeymapNode* next = (node.dict)[key];
         NSString* nextMap = [mappingKey stringByAppendingFormat:@"%C", key.character];
         [self mapsInNode:next :nextMap :dictionary];
     }
 }
 
 - (NSDictionary*)mapsInNode{
-    NSMutableDictionary* dict = [[[NSMutableDictionary alloc] init] autorelease];
+    NSMutableDictionary* dict = [[NSMutableDictionary alloc] init];
     [self mapsInNode:self.root :@"" :dict];
     return dict;
 }
@@ -130,10 +114,10 @@
     XVimKeymapNode* current = self.root;
     NSArray* strokes = XVimKeyStrokesFromXVimString(keyStrokes);
     for( XVimKeyStroke* stroke in strokes ){
-		XVimKeymapNode *nextNode = [current.dict objectForKey:stroke];
+		XVimKeymapNode *nextNode = (current.dict)[stroke];
 		if (!nextNode){
-			nextNode = [[[XVimKeymapNode alloc] init] autorelease];
-			[current.dict setObject:nextNode forKey:stroke];
+			nextNode = [[XVimKeymapNode alloc] init];
+			(current.dict)[stroke] = nextNode;
 		}
 		current = nextNode;
     }
@@ -150,8 +134,8 @@
     XVimKeymapNode* nextNode = nil;
     XVimKeyStroke* stroke = nil;
     if( keystrokes.count != 0 ){
-        stroke = [keystrokes objectAtIndex:0];
-        nextNode = [node.dict objectForKey:stroke];
+        stroke = keystrokes[0];
+        nextNode = (node.dict)[stroke];
         if( nextNode ){
             // Go to most deep node recursively
             [keystrokes removeObjectAtIndex:0];
@@ -197,8 +181,8 @@
 	XVimKeymapNode *nextNode = nil;      // next node to walk to
     XVimString* unProcessedString = @""; // if a node does not have any path to walk rest of input keys are stored to this variable.
 	for ( NSUInteger i = 0 ; i < strokes.count; i++ ){
-        XVimKeyStroke* stroke = [strokes objectAtIndex:i];
-        nextNode = [node.dict objectForKey:stroke];
+        XVimKeyStroke* stroke = strokes[i];
+        nextNode = (node.dict)[stroke];
 		if (nil != nextNode){
             // If there is a node to follow
             [context.inputKeys appendString:[stroke xvimString]];
@@ -237,7 +221,7 @@
             //           and also when inputKeys is not prefix of target (because if inputKeys is prefix of the current target it means it goes to infinite loop)
             if( context.lastMappedNode.remap && infinit_loop_guard != 0 && ![context.lastMappedNode.target hasPrefix:context.inputKeys]){
                 // Key remapping
-                XVimKeymapContext* context = [[[XVimKeymapContext alloc] init] autorelease];
+                XVimKeymapContext* context = [[XVimKeymapContext alloc] init];
                 infinit_loop_guard--;
                 NSString* map = [self mapKeys:newStr withContext:context forceFix:fix];
                 infinit_loop_guard++;

@@ -39,12 +39,12 @@ extern NSString * const XVimBufferKey;
 @property (strong) XVimSearch* searcher;
 @property (strong) XVimMotion* lastCharacterSearchMotion;
 @property (strong) XVimExCommand* excmd;
-@property (readonly) XVimMarks* marks;
-@property (readonly) XVimTester* testRunner;
-@property (readonly) XVimRegisterManager* registerManager;
-@property (readonly) XVimHistoryHandler* exCommandHistory;
-@property (readonly) XVimHistoryHandler* searchHistory;
-@property (readonly) XVimMutableString *lastOperationCommands;
+@property (nonatomic, strong, readonly) XVimMarks* marks;
+@property (nonatomic, strong, readonly) XVimTester* testRunner;
+@property (nonatomic, strong, readonly) XVimRegisterManager* registerManager;
+@property (nonatomic, strong, readonly) XVimHistoryHandler* exCommandHistory;
+@property (nonatomic, strong, readonly) XVimHistoryHandler* searchHistory;
+@property (nonatomic, strong, readonly) XVimMutableString *lastOperationCommands;
 @property (nonatomic) BOOL isRepeating; // For dot(.) command repeat
 
 @property (copy) NSString* lastPlaybackRegister;

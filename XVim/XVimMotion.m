@@ -43,9 +43,7 @@
 }
 
 - (void)dealloc{
-    [_regex release];
     free(_info);
-    [super dealloc];
 }
 
 - (BOOL)isTextObject{

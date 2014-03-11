@@ -22,8 +22,7 @@
                                 @"ggg hhh i_i\n"
                                 @"    jjj kkk";
     
-    return [NSArray arrayWithObjects:
-            XVimMakeTestCase(text, 0, 0, @"qallq@a",  text, 4, 0),
+    return @[XVimMakeTestCase(text, 0, 0, @"qallq@a",  text, 4, 0),
             XVimMakeTestCase(text, 0, 0, @"q\"llq@0", text, 4, 0), // Recording int "" register goes into "0
             XVimMakeTestCase(text, 0, 0, @"qbxxq2@b", x_result, 0, 0),
             
@@ -52,8 +51,7 @@
             // Text include "@a" and yank it to "a register first.
             // Then execute "a register, which will results in ignoring "@" character when executing.
             // (It means it  executes "laq"
-            XVimMakeTestCase(@"l@aq", 0, 0, @"\"ayW@a<ESC>", @"l@qaq", 2, 0),
-            nil];
+            XVimMakeTestCase(@"l@aq", 0, 0, @"\"ayW@a<ESC>", @"l@qaq", 2, 0)];
     
 }
 

@@ -29,8 +29,6 @@
                                     @"uuu\n"
                                     @"xxx\n";
     
-    return [NSArray arrayWithObjects:
-            XVimMakeTestCase(text2, 0,  0, @"VG:sort<CR>", sort_result1, 0, 0),
-    nil];
+    return @[XVimMakeTestCase(text2, 0,  0, @"VG:sort<CR>", sort_result1, 0, 0)];
 }
 @end

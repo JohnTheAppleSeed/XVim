@@ -33,7 +33,7 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        _background = [[NSClassFromString(@"DVTChooserView") performSelector:@selector(alloc)] init];
+        _background = [[DVTChooserView alloc] init];
         _background.gradientStyle = 2;  // Style number 2 looks like IDEGlassBarView   
         [_background setBorderSides:12]; // See DVTBorderedView.h for the meaning of the number
         _status = [[NSInsetTextView alloc] initWithFrame:NSMakeRect(0, 0, 0, STATUS_LINE_HEIGHT)];
@@ -53,9 +53,6 @@
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
-    [_background release];
-    [_status release];
-    [super dealloc];
 }
 
 - (void)layoutStatus:(NSView*)container
@@ -86,7 +83,7 @@
         // Nothing ( Maybe AutoLayout view does the job "automatically")
     }else{
         if( [container subviews].count > 0 ){
-            [[[container subviews] objectAtIndex:0] setFrame:NSMakeRect(0, height, parentRect.size.width, parentRect.size.height-height)];
+            [[container subviews][0] setFrame:NSMakeRect(0, height, parentRect.size.width, parentRect.size.height-height)];
         }
     }
 }
@@ -101,7 +98,7 @@
 
 - (void)_bufferChangedNotification:(NSNotification *)notification
 {
-    XVimBuffer *buffer = [notification.userInfo objectForKey:XVimBufferKey];
+    XVimBuffer *buffer = (notification.userInfo)[XVimBufferKey];
     NSString   *path = buffer.document.fileURL.path;
 
     if (path) {

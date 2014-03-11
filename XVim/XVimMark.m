@@ -17,7 +17,6 @@
     if( self = [super init] ){
         _line = line;
         _column = col;
-        [_document release];
         _document = [doc copy];
     }
     return self;
@@ -35,8 +34,4 @@
     return [self initWithMark:nil];
 }
 
-- (void)dealloc{
-    self.document = nil;
-    [super dealloc];
-}
 @end

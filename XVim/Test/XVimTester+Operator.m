@@ -313,15 +313,7 @@
                                       @"    eee\n"       // 38
                                       @"        fff";    // 46
     
-    return [NSArray arrayWithObjects:
-            // All changes/insertions must be repeated by dot(.)
-            // All insertions must set hat(^) mark
-            // All changes/insertions must set dot(.) mark
-            
-            // Tests for operations in Visual mode are implemneted in XVimTester+Visual.m
-            
-            // a
-            XVimMakeTestCase(text0, 5,  0, @"aXXX<ESC>"    , a_result ,  8, 0), // aXXX<ESC>
+    return @[XVimMakeTestCase(text0, 5,  0, @"aXXX<ESC>"    , a_result ,  8, 0), // aXXX<ESC>
             XVimMakeTestCase(text0, 5,  0, @"3aXXX<ESC>"   , a_result2, 14, 0), // Numeric arg
             XVimMakeTestCase(text0, 5,  0, @"aXXX<ESC>.."  , a_result2, 14, 0), // Repeat
             XVimMakeTestCase(text1, 0,  0, @"aXXX<ESC>jj`^", a_result3,  4, 0), // ^ Mark
@@ -535,15 +527,7 @@
             XVimMakeTestCase(@"017JK",  0, 0, @"<C-a>",    @"020JK",  2, 0),
             XVimMakeTestCase(@"0x19JK", 0, 0, @"<C-a>",    @"0x1aJK", 3, 0),
             XVimMakeTestCase(@" 10JK\n01234",  0, 0, @"<C-a>j", @" 11JK\n01234",  8, 0),
-            XVimMakeTestCase(@"0x0 123",    0, 0, @"<C-x><C-a>", @"0x0000000000000000 123", 17, 0),
-
-            // Insert and Ctrl-e
-            //   The following test case sometimes fails. I do not know when it occurs but occasionally it happens.
-            //   It looks that <C-e> conflicts to the Xcode native key map(end of line) and not processed
-            //   as Vim's command (insert character below the cursor)
-            //   It is weird that it sometimes passes without any preference changing.
-            // XVimMakeTestCase(text1, 4, 0, @"a<C-e><C-e><ESC>", C_e_result, 6, 0),
-            nil];
+            XVimMakeTestCase(@"0x0 123",    0, 0, @"<C-x><C-a>", @"0x0000000000000000 123", 17, 0)];
     
 }
 @end

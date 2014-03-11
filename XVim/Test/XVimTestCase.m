@@ -46,7 +46,7 @@
                            expectedRange:(NSRange)er
                             description:(NSString *)desc
 {
-    XVimTestCase* test = [[[XVimTestCase alloc] init] autorelease];
+    XVimTestCase* test = [[XVimTestCase alloc] init];
     test.initialText = it;
     test.initialRange = ir;
     test.input = in;
@@ -62,13 +62,6 @@
     return test;
 }
 
-- (void)dealloc{
-    self.initialText = nil;
-    self.input = nil;
-    self.expectedText = nil;
-    self.message = nil;
-    [super dealloc];
-}
 
 - (void)setUp
 {

@@ -112,202 +112,228 @@
 #define XVIM_MAKE_MODIFIER(x) ((unsigned short)((KS_MODIFIER<<8) | x ))   // Crate 0xF8XX
 
 struct key_map{
-    NSString* key; // Human readable key expression
+    char *key; // Human readable key expression
     unichar c;     // Char code
-    NSString* selector; // Selector to be called for evaluators
+    char *selector; // Selector to be called for evaluators
 };
 
-static struct key_map key_maps[] = {
-    // If multiple key expressions are mapped to one char code
-    // Put default key expression at the end of the same keys.
-    // The last one will be used when converting charcode -> key expression.
-    { @"NUL",        0, @"NUL"},
-    { @"SOH",        1, @"SOH"},
-    { @"STX",        2, @"STX"},
-    { @"ETX",        3, @"ETX" },
-    { @"EOT",        4, @"EOT"},
-    { @"ENQ",        5, @"ENQ"},
-    { @"ACK",        6, @"ACK"},
-    { @"BEL",        7, @"BEL"},
-    { @"BS",         8, @"BS" },
-    { @"HT",         9, @"TAB"},
-    { @"TAB",        9, @"TAB"}, // Default notation
-    { @"NL",        10, @"NL"},
-    { @"VT",        11, @"VT"},
-    { @"NP",        12, @"NP"},
-    { @"RETURN",    13, @"CR"},
-    { @"ENTER",     13, @"CR"},
-    { @"CR",        13, @"CR"}, // Default notation
-    { @"SO",        14, @"SO"},
-    { @"SI",        15, @"SI"},
-    { @"DLE",       16, @"DLE"},
-    { @"DC1",       17, @"DC1"},
-    { @"DC2",       18, @"DC2"},
-    { @"DC3",       19, @"DC3"},
-    { @"DC4",       20, @"DC4"},
-    { @"NAK",       21, @"NAK"},
-    { @"SYN",       22, @"SYN"},
-    { @"ETB",       23, @"ETB"},
-    { @"CAN",       24, @"CAN"},
-    { @"EM",        25, @"EM"},
-    { @"SUB",       26, @"SUB"},
-    { @"ESC",       27, @"ESC"},
-    { @"FS",        28, @"FS"},
-    { @"GS",        29, @"GS"},
-    { @"RS",        30, @"RS"},
-    { @"US",        31, @"US"},
-    { @"SPACE",     32, @"SPACE"},
-    { @" ",         32, @"SPACE"}, // Default notation
-    { @"!",         33, @"EXCLAMATION"},
-    { @"\"",        34, @"DQUOTE"},
-    { @"#",         35, @"NUMBER"},
-    { @"$",         36, @"DOLLAR"},
-    { @"%",         37, @"PERCENT"},
-    { @"&",         38, @"AMPASAND"},
-    { @"'",         39, @"SQUOTE"},
-    { @"(",         40, @"LPARENTHESIS"},
-    { @")",         41, @"RPARENTHESIS"},
-    { @"*",         42, @"ASTERISK"},
-    { @"+",         43, @"PLUS"},
-    { @",",         44, @"COMMA"},
-    { @"-",         45, @"MINUS"},
-    { @".",         46, @"DOT"},
-    { @"/",         47, @"SLASH"},
-    { @"0",         48, @"NUM0"},
-    { @"1",         49, @"NUM1"},
-    { @"2",         50, @"NUM2"},
-    { @"3",         51, @"NUM3"},
-    { @"4",         52, @"NUM4"},
-    { @"5",         53, @"NUM5"},
-    { @"6",         54, @"NUM6"},
-    { @"7",         55, @"NUM7"},
-    { @"8",         56, @"NUM8"},
-    { @"9",         57, @"NUM9"},
-    { @":",         58, @"COLON"},
-    { @";",         59, @"SEMICOLON"},
-    { @"LT",        60, @"LESSTHAN"},
-    { @"<",         60, @"LESSTHAN"}, // Default notation
-    { @"=",         61, @"EQUAL"},
-    { @">",         62, @"GREATERTHAN"},
-    { @"?",         63, @"QUESTION"},
-    { @"@",         64, @"AT"},
-    { @"[",         91, @"LSQUAREBRACKET"},
-    { @"BSLASH",    92, @"BACKSLASH"},
-    { @"\\",        92, @"BACKSLASH"}, // Default noattion
-    { @"]",         93, @"RSQUAREBRACKET"},
-    { @"^",         94, @"CARET"},
-    { @"_",         95, @"UNDERSCORE"},
-    { @"`",         96, @"BACKQUOTE"},
-    { @"{",        123, @"LBRACE"},
-    { @"BAR",      124, @"BAR"},
-    { @"|",        124, @"BAR"}, // Default notation
-    { @"}",        125, @"RBRACE"},
-    { @"~",        126, @"TILDE"},
-    { @"BS",       127, @"BS"},
-
-    { @"UP",            NSUpArrowFunctionKey,       @"Up"           },
-    { @"DOWN",          NSDownArrowFunctionKey,     @"Down"         },
-    { @"LEFT",          NSLeftArrowFunctionKey,     @"Left"         },
-    { @"RIGHT",         NSRightArrowFunctionKey,    @"Right"        },
-    { @"F1",            NSF1FunctionKey,            @"F1"           },
-    { @"F2",            NSF2FunctionKey,            @"F2"           },
-    { @"F3",            NSF3FunctionKey,            @"F3"           },
-    { @"F4",            NSF4FunctionKey,            @"F4"           },
-    { @"F5",            NSF5FunctionKey,            @"F5"           },
-    { @"F6",            NSF6FunctionKey,            @"F6"           },
-    { @"F7",            NSF7FunctionKey,            @"F7"           },
-    { @"F8",            NSF8FunctionKey,            @"F8"           },
-    { @"F9",            NSF9FunctionKey,            @"F9"           },
-    { @"F10",           NSF10FunctionKey,           @"F10"          },
-    { @"F11",           NSF11FunctionKey,           @"F11"          },
-    { @"F12",           NSF12FunctionKey,           @"F12"          },
-    { @"F13",           NSF13FunctionKey,           @"F13"          },
-    { @"F14",           NSF14FunctionKey,           @"F14"          },
-    { @"F15",           NSF15FunctionKey,           @"F15"          },
-    { @"F16",           NSF16FunctionKey,           @"F16"          },
-    { @"F17",           NSF17FunctionKey,           @"F17"          },
-    { @"F18",           NSF18FunctionKey,           @"F18"          },
-    { @"F19",           NSF19FunctionKey,           @"F19"          },
-    { @"F20",           NSF20FunctionKey,           @"F20"          },
-    { @"F21",           NSF21FunctionKey,           @"F21"          },
-    { @"F22",           NSF22FunctionKey,           @"F22"          },
-    { @"F23",           NSF23FunctionKey,           @"F23"          },
-    { @"F24",           NSF24FunctionKey,           @"F24"          },
-    { @"F25",           NSF25FunctionKey,           @"F25"          },
-    { @"F26",           NSF26FunctionKey,           @"F26"          },
-    { @"F27",           NSF27FunctionKey,           @"F27"          },
-    { @"F28",           NSF28FunctionKey,           @"F28"          },
-    { @"F29",           NSF29FunctionKey,           @"F29"          },
-    { @"F30",           NSF30FunctionKey,           @"F30"          },
-    { @"F31",           NSF31FunctionKey,           @"F31"          },
-    { @"F32",           NSF32FunctionKey,           @"F32"          },
-    { @"F33",           NSF33FunctionKey,           @"F33"          },
-    { @"F34",           NSF34FunctionKey,           @"F34"          },
-    { @"F35",           NSF35FunctionKey,           @"F35"          },
-    { @"INS",           NSInsertFunctionKey,        @"Insert"       },
-
-    { @"DEL",           NSDeleteFunctionKey,        @"DEL"          },
-    { @"HOME",          NSHomeFunctionKey,          @"Home"         },
-    { @"BEGIN",         NSBeginFunctionKey,         @"Begin"        },
-    { @"END",           NSEndFunctionKey,           @"End"          },
-    { @"PGUP",          NSPageUpFunctionKey,        @"Pageup"       },
-    { @"PGDN",          NSPageDownFunctionKey,      @"Pagedown"     },
-    { @"PRINTSCREEN",   NSPrintScreenFunctionKey,   @"PrintScreen"  },
-    { @"SCREENLOCK",    NSScrollLockFunctionKey,    @"ScrLock"      },
-    { @"PAUSE",         NSPauseFunctionKey,         @"Pause"        },
-    { @"SYSREQ",        NSSysReqFunctionKey,        @"SysReq"       },
-    { @"BREAK",         NSBreakFunctionKey,         @"Break"        },
-    { @"RESET",         NSResetFunctionKey,         @"Reset"        },
-    { @"STOP",          NSStopFunctionKey,          @"Stop"         },
-    { @"MENU",          NSMenuFunctionKey,          @"Menu"         },
-    { @"USER",          NSUserFunctionKey,          @"User"         },
-    { @"SYSTEM",        NSSystemFunctionKey,        @"System"       },
-    { @"PRINT",         NSPrintFunctionKey,         @"Print"        },
-    { @"CLEARLINE",     NSClearLineFunctionKey,     @"ClearLine"    },
-    { @"CLEARDISPLAY",  NSClearDisplayFunctionKey,  @"ClearDisplay" },
-    { @"INSLINE",       NSInsertLineFunctionKey,    @"InsLine"      },
-    { @"DELLINE",       NSDeleteLineFunctionKey,    @"DelLine"      },
-    { @"INSCHAR",       NSInsertCharFunctionKey,    @"InsChar"      },
-    { @"DELCHAR",       NSDeleteCharFunctionKey,    @"DelChar"      },
-    { @"PREV",          NSPrevFunctionKey,          @"Prev"         },
-    { @"NEXT",          NSNextFunctionKey,          @"Next"         },
-    { @"SELECT",        NSSelectFunctionKey,        @"Select"       },
-    { @"EXECUTE",       NSExecuteFunctionKey,       @"Execute"      },
-    { @"UNDO",          NSUndoFunctionKey,          @"Undo"         },
-    { @"REDO",          NSRedoFunctionKey,          @"Redo"         },
-    { @"FIND",          NSFindFunctionKey,          @"Find"         },
-    { @"HELP",          NSHelpFunctionKey,          @"Help"         },
-    { @"MODESWITCH",    NSModeSwitchFunctionKey,    @"ModeSwitch"   },
-
-    { nil, 0, nil },
-};
-
-static NSMutableDictionary *s_unicharToSelector = nil;
-static NSMutableDictionary *s_keyToUnichar = nil;
-static NSMutableDictionary *s_unicharToKey= nil;
-static locale_t s_locale;
-
-NS_INLINE void init_maps(void)
+NS_INLINE struct key_map * KeyMaps()
 {
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        s_unicharToSelector = [[NSMutableDictionary alloc] init]; // Never release
-        s_keyToUnichar = [[NSMutableDictionary alloc] init]; // Never release
-        s_unicharToKey= [[NSMutableDictionary alloc] init]; // Never release
-
-        for (NSUInteger i = 0; key_maps[i].key; i++) {
-            NSNumber *c   = @(key_maps[i].c);
-            NSString *key = key_maps[i].key;
-            NSString *sel = key_maps[i].selector;
-
-            [s_unicharToSelector setObject:sel forKey:c];
-            [s_keyToUnichar      setObject:c   forKey:key];
-            [s_unicharToKey      setObject:key forKey:c];
-            // any UTF-8 works because we ask for iswprint() or wcwidth()
-            s_locale = newlocale(LC_CTYPE_MASK, "en_US.UTF-8", NULL);
-        }
-    });
+	static struct key_map key_maps[] = {
+		// If multiple key expressions are mapped to one char code
+		// Put default key expression at the end of the same keys.
+		// The last one will be used when converting charcode -> key expression.
+		{ "NUL",        0, "NUL"},
+		{ "SOH",        1, "SOH"},
+		{ "STX",        2, "STX"},
+		{ "ETX",        3, "ETX" },
+		{ "EOT",        4, "EOT"},
+		{ "ENQ",        5, "ENQ"},
+		{ "ACK",        6, "ACK"},
+		{ "BEL",        7, "BEL"},
+		{ "BS",         8, "BS" },
+		{ "HT",         9, "TAB"},
+		{ "TAB",        9, "TAB"}, // Default notation
+		{ "NL",        10, "NL"},
+		{ "VT",        11, "VT"},
+		{ "NP",        12, "NP"},
+		{ "RETURN",    13, "CR"},
+		{ "ENTER",     13, "CR"},
+		{ "CR",        13, "CR"}, // Default notation
+		{ "SO",        14, "SO"},
+		{ "SI",        15, "SI"},
+		{ "DLE",       16, "DLE"},
+		{ "DC1",       17, "DC1"},
+		{ "DC2",       18, "DC2"},
+		{ "DC3",       19, "DC3"},
+		{ "DC4",       20, "DC4"},
+		{ "NAK",       21, "NAK"},
+		{ "SYN",       22, "SYN"},
+		{ "ETB",       23, "ETB"},
+		{ "CAN",       24, "CAN"},
+		{ "EM",        25, "EM"},
+		{ "SUB",       26, "SUB"},
+		{ "ESC",       27, "ESC"},
+		{ "FS",        28, "FS"},
+		{ "GS",        29, "GS"},
+		{ "RS",        30, "RS"},
+		{ "US",        31, "US"},
+		{ "SPACE",     32, "SPACE"},
+		{ " ",         32, "SPACE"}, // Default notation
+		{ "!",         33, "EXCLAMATION"},
+		{ "\"",        34, "DQUOTE"},
+		{ "#",         35, "NUMBER"},
+		{ "$",         36, "DOLLAR"},
+		{ "%",         37, "PERCENT"},
+		{ "&",         38, "AMPASAND"},
+		{ "'",         39, "SQUOTE"},
+		{ "(",         40, "LPARENTHESIS"},
+		{ ")",         41, "RPARENTHESIS"},
+		{ "*",         42, "ASTERISK"},
+		{ "+",         43, "PLUS"},
+		{ ",",         44, "COMMA"},
+		{ "-",         45, "MINUS"},
+		{ ".",         46, "DOT"},
+		{ "/",         47, "SLASH"},
+		{ "0",         48, "NUM0"},
+		{ "1",         49, "NUM1"},
+		{ "2",         50, "NUM2"},
+		{ "3",         51, "NUM3"},
+		{ "4",         52, "NUM4"},
+		{ "5",         53, "NUM5"},
+		{ "6",         54, "NUM6"},
+		{ "7",         55, "NUM7"},
+		{ "8",         56, "NUM8"},
+		{ "9",         57, "NUM9"},
+		{ ":",         58, "COLON"},
+		{ ";",         59, "SEMICOLON"},
+		{ "LT",        60, "LESSTHAN"},
+		{ "<",         60, "LESSTHAN"}, // Default notation
+		{ "=",         61, "EQUAL"},
+		{ ">",         62, "GREATERTHAN"},
+		{ "?",         63, "QUESTION"},
+		{ "@",         64, "AT"},
+		{ "[",         91, "LSQUAREBRACKET"},
+		{ "BSLASH",    92, "BACKSLASH"},
+		{ "\\",        92, "BACKSLASH"}, // Default noattion
+		{ "]",         93, "RSQUAREBRACKET"},
+		{ "^",         94, "CARET"},
+		{ "_",         95, "UNDERSCORE"},
+		{ "`",         96, "BACKQUOTE"},
+		{ "{",        123, "LBRACE"},
+		{ "BAR",      124, "BAR"},
+		{ "|",        124, "BAR"}, // Default notation
+		{ "}",        125, "RBRACE"},
+		{ "~",        126, "TILDE"},
+		{ "BS",       127, "BS"},
+		
+		{ "UP",            NSUpArrowFunctionKey,       "Up"           },
+		{ "DOWN",          NSDownArrowFunctionKey,     "Down"         },
+		{ "LEFT",          NSLeftArrowFunctionKey,     "Left"         },
+		{ "RIGHT",         NSRightArrowFunctionKey,    "Right"        },
+		{ "F1",            NSF1FunctionKey,            "F1"           },
+		{ "F2",            NSF2FunctionKey,            "F2"           },
+		{ "F3",            NSF3FunctionKey,            "F3"           },
+		{ "F4",            NSF4FunctionKey,            "F4"           },
+		{ "F5",            NSF5FunctionKey,            "F5"           },
+		{ "F6",            NSF6FunctionKey,            "F6"           },
+		{ "F7",            NSF7FunctionKey,            "F7"           },
+		{ "F8",            NSF8FunctionKey,            "F8"           },
+		{ "F9",            NSF9FunctionKey,            "F9"           },
+		{ "F10",           NSF10FunctionKey,           "F10"          },
+		{ "F11",           NSF11FunctionKey,           "F11"          },
+		{ "F12",           NSF12FunctionKey,           "F12"          },
+		{ "F13",           NSF13FunctionKey,           "F13"          },
+		{ "F14",           NSF14FunctionKey,           "F14"          },
+		{ "F15",           NSF15FunctionKey,           "F15"          },
+		{ "F16",           NSF16FunctionKey,           "F16"          },
+		{ "F17",           NSF17FunctionKey,           "F17"          },
+		{ "F18",           NSF18FunctionKey,           "F18"          },
+		{ "F19",           NSF19FunctionKey,           "F19"          },
+		{ "F20",           NSF20FunctionKey,           "F20"          },
+		{ "F21",           NSF21FunctionKey,           "F21"          },
+		{ "F22",           NSF22FunctionKey,           "F22"          },
+		{ "F23",           NSF23FunctionKey,           "F23"          },
+		{ "F24",           NSF24FunctionKey,           "F24"          },
+		{ "F25",           NSF25FunctionKey,           "F25"          },
+		{ "F26",           NSF26FunctionKey,           "F26"          },
+		{ "F27",           NSF27FunctionKey,           "F27"          },
+		{ "F28",           NSF28FunctionKey,           "F28"          },
+		{ "F29",           NSF29FunctionKey,           "F29"          },
+		{ "F30",           NSF30FunctionKey,           "F30"          },
+		{ "F31",           NSF31FunctionKey,           "F31"          },
+		{ "F32",           NSF32FunctionKey,           "F32"          },
+		{ "F33",           NSF33FunctionKey,           "F33"          },
+		{ "F34",           NSF34FunctionKey,           "F34"          },
+		{ "F35",           NSF35FunctionKey,           "F35"          },
+		{ "INS",           NSInsertFunctionKey,        "Insert"       },
+		
+		{ "DEL",           NSDeleteFunctionKey,        "DEL"          },
+		{ "HOME",          NSHomeFunctionKey,          "Home"         },
+		{ "BEGIN",         NSBeginFunctionKey,         "Begin"        },
+		{ "END",           NSEndFunctionKey,           "End"          },
+		{ "PGUP",          NSPageUpFunctionKey,        "Pageup"       },
+		{ "PGDN",          NSPageDownFunctionKey,      "Pagedown"     },
+		{ "PRINTSCREEN",   NSPrintScreenFunctionKey,   "PrintScreen"  },
+		{ "SCREENLOCK",    NSScrollLockFunctionKey,    "ScrLock"      },
+		{ "PAUSE",         NSPauseFunctionKey,         "Pause"        },
+		{ "SYSREQ",        NSSysReqFunctionKey,        "SysReq"       },
+		{ "BREAK",         NSBreakFunctionKey,         "Break"        },
+		{ "RESET",         NSResetFunctionKey,         "Reset"        },
+		{ "STOP",          NSStopFunctionKey,          "Stop"         },
+		{ "MENU",          NSMenuFunctionKey,          "Menu"         },
+		{ "USER",          NSUserFunctionKey,          "User"         },
+		{ "SYSTEM",        NSSystemFunctionKey,        "System"       },
+		{ "PRINT",         NSPrintFunctionKey,         "Print"        },
+		{ "CLEARLINE",     NSClearLineFunctionKey,     "ClearLine"    },
+		{ "CLEARDISPLAY",  NSClearDisplayFunctionKey,  "ClearDisplay" },
+		{ "INSLINE",       NSInsertLineFunctionKey,    "InsLine"      },
+		{ "DELLINE",       NSDeleteLineFunctionKey,    "DelLine"      },
+		{ "INSCHAR",       NSInsertCharFunctionKey,    "InsChar"      },
+		{ "DELCHAR",       NSDeleteCharFunctionKey,    "DelChar"      },
+		{ "PREV",          NSPrevFunctionKey,          "Prev"         },
+		{ "NEXT",          NSNextFunctionKey,          "Next"         },
+		{ "SELECT",        NSSelectFunctionKey,        "Select"       },
+		{ "EXECUTE",       NSExecuteFunctionKey,       "Execute"      },
+		{ "UNDO",          NSUndoFunctionKey,          "Undo"         },
+		{ "REDO",          NSRedoFunctionKey,          "Redo"         },
+		{ "FIND",          NSFindFunctionKey,          "Find"         },
+		{ "HELP",          NSHelpFunctionKey,          "Help"         },
+		{ "MODESWITCH",    NSModeSwitchFunctionKey,    "ModeSwitch"   },
+		
+		{ 0, 0, 0 },
+	};
+	
+	return key_maps;
 }
+
+@interface XVimKeyMap : NSObject
+
+@property (nonatomic, strong) NSMutableDictionary *unicharToSelector;
+@property (nonatomic, strong) NSMutableDictionary *keyToUnichar;
+@property (nonatomic, strong) NSMutableDictionary *unicharToKey;
+@property (nonatomic, assign) locale_t locale;
+
++ (XVimKeyMap *)sharedInstance;
+
+@end
+
+@implementation XVimKeyMap
+
+@synthesize unicharToKey = _unicharToKey;
+@synthesize keyToUnichar = _keyToUnichar;
+@synthesize unicharToSelector = _unicharToSelector;
+@synthesize locale = _locale;
+
++ (XVimKeyMap *)sharedInstance
+{
+	static XVimKeyMap *instance;
+	static dispatch_once_t once;
+    dispatch_once(&once, ^{
+		instance = [XVimKeyMap new];
+		
+		instance.unicharToSelector = [[NSMutableDictionary alloc] init];
+        instance.keyToUnichar = [[NSMutableDictionary alloc] init];
+        instance.unicharToKey= [[NSMutableDictionary alloc] init];
+		
+		struct key_map *keyMaps = KeyMaps();
+        for (NSUInteger i = 0; keyMaps[i].key; i++) {
+			struct key_map keyMap = keyMaps[i];
+            NSNumber *c   = @(keyMap.c);
+            NSString *key = @(keyMap.key);
+            NSString *sel = @(keyMap.selector);
+			
+            instance.unicharToSelector[c] = sel;
+            instance.keyToUnichar[key] = c;
+            instance.unicharToKey[c] = key;
+        }
+		// any UTF-8 works because we ask for iswprint() or wcwidth()
+		instance.locale = newlocale(LC_CTYPE_MASK, "en_US.UTF-8", NULL);
+	});
+	return instance;
+}
+
+@end
 
 NS_INLINE BOOL isNSFunctionKey(unichar c)
 {
@@ -317,15 +343,11 @@ NS_INLINE BOOL isNSFunctionKey(unichar c)
 
 NS_INLINE BOOL isPrintable(unichar c)
 {
-    init_maps();
-
-    return !isNSFunctionKey(c) && iswprint_l(c, s_locale);
+    return !isNSFunctionKey(c) && iswprint_l(c, [XVimKeyMap sharedInstance].locale);
 }
 
 NS_INLINE BOOL isValidKey(NSString *key)
 {
-    init_maps();
-
     if (key.length == 0) {
         return NO;
     }
@@ -333,13 +355,11 @@ NS_INLINE BOOL isValidKey(NSString *key)
         return isPrintable([key characterAtIndex:0]);
     }
 
-    return [s_keyToUnichar objectForKey:key.uppercaseString] != 0;
+    return [XVimKeyMap sharedInstance].keyToUnichar[key.uppercaseString] != 0;
 }
 
 NS_INLINE unichar unicharFromKey(NSString *key)
 {
-    init_maps();
-
     if (key.length == 0) {
         return (unichar)-1;
     }
@@ -349,14 +369,12 @@ NS_INLINE unichar unicharFromKey(NSString *key)
         return isPrintable(c) ? c : (unichar)-1;
     }
 
-    return [[s_keyToUnichar objectForKey:key.uppercaseString] unsignedIntegerValue];
+    return [[XVimKeyMap sharedInstance].keyToUnichar[key.uppercaseString] unsignedIntegerValue];
 }
 
 NS_INLINE NSString *keyFromUnichar(unichar c)
 {
-    init_maps();
-
-    NSString *key = [s_unicharToKey objectForKey:@(c)];
+    NSString *key = [XVimKeyMap sharedInstance].unicharToKey[@(c)];
     if (key) {
         return key;
     }
@@ -373,9 +391,7 @@ NS_INLINE BOOL isModifier(unichar c)
 
 static XVimString *MakeXVimString(unichar character, unsigned short modifier)
 {
-    NSMutableString *str = [[[NSMutableString alloc] init] autorelease];
-
-    init_maps();
+    NSMutableString *str = [[NSMutableString alloc] init];
 
     // If the character is pritable we do not consider Shift modifier
     // For example <S-!> and ! is same
@@ -458,7 +474,7 @@ static XVimString *XVimStringFromKeyNotationImpl(NSString *string, NSUInteger *i
 XVimString* XVimStringFromKeyNotation(NSString* notation){
     NSUInteger index = 0;
     NSUInteger len = notation.length;
-    NSMutableString* str = [[[NSMutableString alloc] init] autorelease];
+    NSMutableString* str = [[NSMutableString alloc] init];
     while (index < len){
         XVimString* oneKey = XVimStringFromKeyNotationImpl(notation, &index);
         if( oneKey == nil ){
@@ -470,7 +486,7 @@ XVimString* XVimStringFromKeyNotation(NSString* notation){
 }
 
 XVimString* XVimStringFromKeyStrokes(NSArray* strokes){
-    NSMutableString* str = [[[NSMutableString alloc] init] autorelease];
+    NSMutableString* str = [[NSMutableString alloc] init];
     for( XVimKeyStroke* stroke in strokes ){
         [str appendString:[stroke xvimString]];
     }
@@ -478,7 +494,7 @@ XVimString* XVimStringFromKeyStrokes(NSArray* strokes){
 }
 
 NSArray* XVimKeyStrokesFromXVimString(XVimString* string){
-    NSMutableArray* array = [[[NSMutableArray alloc] init] autorelease];
+    NSMutableArray* array = [[NSMutableArray alloc] init];
     for( NSUInteger i = 0; i < string.length; i++ ){
         unichar c1 = [string characterAtIndex:i];
         unichar c2;
@@ -490,7 +506,7 @@ NSArray* XVimKeyStrokesFromXVimString(XVimString* string){
             c1 = 0;
         }
 
-        XVimKeyStroke* stroke = [[[XVimKeyStroke alloc] initWithCharacter:c2 modifier:c1] autorelease];
+        XVimKeyStroke* stroke = [[XVimKeyStroke alloc] initWithCharacter:c2 modifier:c1];
         [array addObject:stroke];
     }
     return array;
@@ -502,7 +518,7 @@ NSArray* XVimKeyStrokesFromKeyNotation(NSString* notation){
 
 NSString* XVimKeyNotationFromXVimString(XVimString* string){
     NSArray* array = XVimKeyStrokesFromXVimString(string);
-    NSMutableString* str = [[[NSMutableString alloc] init] autorelease];
+    NSMutableString* str = [[NSMutableString alloc] init];
     for( XVimKeyStroke* stroke in array ){
         [str appendString:[stroke keyNotation]];
     }
@@ -526,7 +542,7 @@ NSString* XVimKeyNotationFromXVimString(XVimString* string){
         c = '\t';
     }
     mod = NSMOD2XVIMMOD(mod);
-    return [[[XVimKeyStroke alloc] initWithCharacter:c modifier:(unsigned char)mod] autorelease];
+    return [[XVimKeyStroke alloc] initWithCharacter:c modifier:(unsigned char)mod];
 }
 
 - (XVimString*)toXVimString{
@@ -541,7 +557,7 @@ NSString* XVimKeyNotationFromXVimString(XVimString* string){
 
 + (void)initialize
 {
-    init_maps();
+    [XVimKeyMap sharedInstance];
 }
 
 - (id)initWithCharacter:(unichar)c modifier:(unsigned char)mod{
@@ -611,7 +627,7 @@ NSString* XVimKeyNotationFromXVimString(XVimString* string){
     }
     [str appendString:[self keyNotation]];
 
-    return [str autorelease];
+    return str;
 }
 
 - (BOOL)isPrintable
@@ -648,7 +664,7 @@ NSString* XVimKeyNotationFromXVimString(XVimString* string){
     if (_modifier || !isPrintable(charcode)) {
         [keyStr appendString:@">"];
     }
-    return [keyStr autorelease];
+    return keyStr;
 }
 
 - (SEL)selector
@@ -676,7 +692,7 @@ NSString* XVimKeyNotationFromXVimString(XVimString* string){
         buf[pos++] = _character;
         buf[pos++] = '\0';
     } else {
-        NSString *keyname = [s_unicharToSelector objectForKey:@(_character)];
+        NSString *keyname = [XVimKeyMap sharedInstance].unicharToSelector[@(_character)];
 
         if (!keyname) {
             return @selector(__invalid_selector_name__);

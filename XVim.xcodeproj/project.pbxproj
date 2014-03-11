@@ -138,8 +138,8 @@
 		A2E7E46417F0382E008F045A /* IDEKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2E7E45817F037EF008F045A /* IDEKit.framework */; };
 		A2E7E46517F03835008F045A /* DVTFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2E7E45E17F03802008F045A /* DVTFoundation.framework */; };
 		A2E7E46617F03835008F045A /* DVTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2E7E45C17F037FF008F045A /* DVTKit.framework */; };
-		A2F2621B182CEC3600AD3DC4 /* DVTSourceTextScrollView+XVim.m in Sources */ = {isa = PBXBuildFile; fileRef = A2F2621A182CEC3600AD3DC4 /* DVTSourceTextScrollView+XVim.m */; };
-		A2F2621C182CEC3600AD3DC4 /* DVTSourceTextScrollView+XVim.m in Sources */ = {isa = PBXBuildFile; fileRef = A2F2621A182CEC3600AD3DC4 /* DVTSourceTextScrollView+XVim.m */; };
+		A2F2621B182CEC3600AD3DC4 /* DVTSourceTextScrollView+XVim.m in Sources */ = {isa = PBXBuildFile; fileRef = A2F2621A182CEC3600AD3DC4 /* DVTSourceTextScrollView+XVim.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		A2F2621C182CEC3600AD3DC4 /* DVTSourceTextScrollView+XVim.m in Sources */ = {isa = PBXBuildFile; fileRef = A2F2621A182CEC3600AD3DC4 /* DVTSourceTextScrollView+XVim.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		A2F4A33E14F00B25006DA5A5 /* XVimNormalEvaluator.m in Sources */ = {isa = PBXBuildFile; fileRef = A2F4A33D14F00B25006DA5A5 /* XVimNormalEvaluator.m */; };
 		A2F4A34314F00BD3006DA5A5 /* XVimVisualEvaluator.m in Sources */ = {isa = PBXBuildFile; fileRef = A2F4A34214F00BD3006DA5A5 /* XVimVisualEvaluator.m */; };
 		A2FF17D11502B292003FE648 /* XVimMotionEvaluator.m in Sources */ = {isa = PBXBuildFile; fileRef = A2FF17D01502B291003FE648 /* XVimMotionEvaluator.m */; };
@@ -994,6 +994,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "XVim/XVim-Prefix.pch";
@@ -1002,8 +1003,11 @@
 					"$(inherited)",
 				);
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_WARN_UNUSED_VALUE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = XVim/Info_Xcode5.plist;
 				INSTALL_PATH = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.6.8;
 				PRODUCT_NAME = XVim;
 				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "$(inherited)";
@@ -1015,13 +1019,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "XVim/XVim-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = "XVIM_XCODE_VERSION=5";
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_WARN_UNUSED_VALUE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = XVim/Info_Xcode5.plist;
 				INSTALL_PATH = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.6.8;
 				PRODUCT_NAME = XVim;
 				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "$(inherited)";
@@ -1117,8 +1125,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COMBINE_HIDPI_IMAGES = YES;
-				GCC_ENABLE_OBJC_GC = supported;
+				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "XVim/XVim-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1128,6 +1137,7 @@
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = XVim/Info.plist;
 				INSTALL_PATH = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.6.8;
 				PRODUCT_NAME = XVim;
 				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "$(inherited)";
@@ -1139,14 +1149,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COMBINE_HIDPI_IMAGES = YES;
-				GCC_ENABLE_OBJC_GC = supported;
+				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "XVim/XVim-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = "XVIM_XCODE_VERSION=4";
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = XVim/Info.plist;
 				INSTALL_PATH = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.6.8;
 				PRODUCT_NAME = XVim;
 				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "$(inherited)";

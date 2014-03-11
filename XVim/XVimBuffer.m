@@ -91,14 +91,12 @@ static char const * const XVIM_KEY_BUFFER = "xvim_buffer";
 {
     DEBUG_LOG("Buffer %p destroyed", self);
 
-    [_curOp release];
-    [super dealloc];
 }
 
 + (XVimBuffer *)makeBufferForDocument:(NSDocument *)document
                           textStorage:(NSTextStorage *)textStorage
 {
-    return [[[[self class] alloc] initWithDocument:document textStorage:textStorage] autorelease];
+    return [[[self class] alloc] initWithDocument:document textStorage:textStorage];
 }
 
 #pragma mark Properties
@@ -622,7 +620,6 @@ static NSUInteger xvim_sb_count_columns(xvim_string_buffer_t *sb, NSUInteger tab
 
     if (--_editCount == 0) {
         [_curOp registerForBuffer:self];
-        [_curOp release];
         _curOp = nil;
     }
 }
@@ -714,12 +711,9 @@ NS_INLINE unichar rot13(unichar c)
             }
         } while (xvim_sb_next(&sb));
 
-        [L release];
-        [U release];
     }
 
     [self replaceCharactersInRange:range withString:s];
-    [s release];
     CFRelease(locale);
 }
 

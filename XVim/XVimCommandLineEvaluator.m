@@ -38,8 +38,8 @@
 		  onKeyPress:(OnKeyPressHandler)keyPressHandler
 {
     if (self = [super initWithWindow:window]){
-		_firstLetter = [firstLetter retain];
-		_history = [history retain];
+		_firstLetter = firstLetter;
+		_history = history;
 		_onComplete = [completeHandler copy];
 		_onKeyPress = [keyPressHandler copy];
 		_historyNo = 0;
@@ -52,15 +52,6 @@
 	return self;
 }
 
-- (void)dealloc{
-    [_firstLetter release];
-    [_history release];
-    [_onComplete release];
-    [_onKeyPress release];
-    [_evalutionResult release];
-    self.lastTextView = nil;
-    [super dealloc];
-}
 
 - (void)becameHandler{
 	[self takeFocusFromWindow];
@@ -112,7 +103,7 @@
 	XVimCommandField *commandField = self.window.commandLine.commandField;
     SEL sel = keyStroke.selector;
     if ([self respondsToSelector:sel]) {
-		next = [self performSelector:sel];
+		next = SuppressPerformSelectorLeakWarning([self performSelector:sel]);
 	}
 	else{
 		[commandField handleKeyStroke:keyStroke inWindow:self.window];

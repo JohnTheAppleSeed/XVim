@@ -107,7 +107,7 @@ static NSString *precomputed[9] = {
     if (count) {
         [s appendString:precomputed[count]];
     }
-    return [s autorelease];
+    return s;
 }
 
 - (void)appendCharacters:(const unichar *)chars length:(NSUInteger)length

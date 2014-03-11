@@ -17,12 +17,8 @@ NS_INLINE void _xvim_init_charsets(void)
 {
     static dispatch_once_t once;
     dispatch_once(&once, ^{
-#define CS(s) [[NSCharacterSet characterSetWithCharactersInString:s] retain]
-
-        _xvimHexDigits = CS(@"0123456789abcdefABCDEF");
-        _xvimOctDigits = CS(@"01234567");
-
-#undef CS
+        _xvimHexDigits = [NSCharacterSet characterSetWithCharactersInString:@"0123456789abcdefABCDEF"];
+        _xvimOctDigits = [NSCharacterSet characterSetWithCharactersInString:@"01234567"];
     });
 }
 

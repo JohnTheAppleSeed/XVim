@@ -36,8 +36,8 @@
 
 -(id)initWithCmd:(NSString*)cmd method:(NSString*)method{
     if( self = [super init] ){
-        cmdName = [cmd retain];
-        methodName = [method retain];
+        cmdName = cmd;
+        methodName = method;
     }
     return self;
 }
@@ -53,8 +53,7 @@
         // The method names correspond the Vim's function name.
         // You can change the method name as needed ( Since Vim's one is not always suitable )
         
-        _excommands = [[NSArray alloc] initWithObjects:
-                       CMD(@"append", @"append:inWindow:"),
+        _excommands = @[CMD(@"append", @"append:inWindow:"),
                        CMD(@"abbreviate", @"abbreviate:inWindow:"),
                        CMD(@"abclear", @"abclear:inWindow:"),
                        CMD(@"aboveleft", @"wrongmodifier:inWindow:"),
@@ -571,16 +570,11 @@
                        CMD(@"Next", @"previous:inWindow:"),
                        CMD(@"Print", @"print:inWindow:"),
                        CMD(@"X", @"X:inWindow:"),
-                       CMD(@"~", @"sub:inWindow:"),
-					   nil];
+                       CMD(@"~", @"sub:inWindow:")];
     }
     return self;
 }
 
-- (void)dealloc{
-    [_excommands release];
-    [super dealloc];
-}
 
 // This method correnspons parsing part of get_address in ex_cmds.c
 - (NSUInteger)getAddress:(unichar*)parsing :(unichar**)cmdLeft inWindow:(XVimWindow*)window
@@ -710,7 +704,7 @@
 
 - (XVimExArg*)parseCommand:(NSString*)cmd inWindow:(XVimWindow*)window
 {
-    XVimExArg* exarg = [[[XVimExArg alloc] init] autorelease]; 
+    XVimExArg* exarg = [[XVimExArg alloc] init]; 
     NSUInteger len = [cmd length];
     
     // Create unichar array to parse. Its easier
@@ -836,7 +830,7 @@
         if( [cmdname.cmdName hasPrefix:[exarg cmd]] ){
             SEL method = NSSelectorFromString(cmdname.methodName);
             if( [self respondsToSelector:method] ){
-                [self performSelector:method withObject:exarg withObject:window];
+                SuppressPerformSelectorLeakWarning([self performSelector:method withObject:exarg withObject:window]);
                 break;
             }
         }
@@ -858,11 +852,12 @@
     if( [params count] == 0 ){
         return;
     }
-    XVimDebug* debug = [[[XVimDebug alloc] init] autorelease];
-    NSString* selector = [NSString stringWithFormat:@"%@:withWindow:",[params objectAtIndex:0]];
+    XVimDebug* debug = [[XVimDebug alloc] init];
+    NSString* selector = [NSString stringWithFormat:@"%@:withWindow:",params[0]];
     [params removeObjectAtIndex:0];
-    if( [debug respondsToSelector:NSSelectorFromString(selector)] ){
-        [debug performSelector:NSSelectorFromString(selector) withObject:params withObject:window];
+	SEL method = NSSelectorFromString(selector);
+    if( [debug respondsToSelector:method] ){
+		SuppressPerformSelectorLeakWarning([debug performSelector:method withObject:params withObject:window]);
     }
 }
 
@@ -955,7 +950,7 @@
 	}
   
 	if (subStrings.count >= 2) {
-		NSString *fromString = [subStrings objectAtIndex:0];
+		NSString *fromString = subStrings[0];
         [subStrings removeObjectAtIndex:0];
         // Todo: ":map a b  " must be mapped to "a" -> "b<space><space>"
 		NSString *toString = [subStrings componentsJoinedByString:@" "]; // get all args seperate by space
@@ -984,7 +979,7 @@
 	}
   
 	if (subStrings.count >= 1) {
-		NSString *fromString = [subStrings objectAtIndex:0];
+		NSString *fromString = subStrings[0];
 		if (fromString.length > 0 ){
 			XVimKeymap *keymap = [[XVim instance] keymapForMode:mode];
 			[keymap unmap:XVimStringFromKeyNotation(fromString)];
@@ -1108,10 +1103,10 @@
     }else if( [setCommand hasPrefix:@"no"] ){
         // "set noXXX" form
         NSString* prop = [setCommand substringFromIndex:2];
-        [options setOption:prop value:[NSNumber numberWithBool:NO]];
+        [options setOption:prop value:@NO];
     }else{
         // "set XXX" form
-        [options setOption:setCommand value:[NSNumber numberWithBool:YES]];
+        [options setOption:setCommand value:@YES];
     }
     
     if( [setCommand isEqualToString:@"wrap"] ){
@@ -1272,7 +1267,7 @@
     IDEWorkspaceTabController* ctrl = XVimLastActiveWorkspaceTabController();
     if( [ctrl respondsToSelector:item.action] ){
         NSLog(@"IDEWorkspaceTabController perform action");
-        [ctrl performSelector:item.action withObject:item];
+        SuppressPerformSelectorLeakWarning([ctrl performSelector:item.action withObject:item]);
     } else {
         [NSApp sendAction:item.action to:item.target from:item];
         NSLog(@"menu perform action");
@@ -1281,8 +1276,9 @@
 
 - (void)xctabctrl:(XVimExArg*)args inWindow:(XVimWindow*)window{
     IDEWorkspaceTabController* ctrl = XVimLastActiveWorkspaceTabController();
-    if( [ctrl respondsToSelector:NSSelectorFromString(args.arg)] ){
-        [ctrl performSelector:NSSelectorFromString(args.arg) withObject:self];
+	SEL method = NSSelectorFromString(args.arg);
+    if( [ctrl respondsToSelector:method] ){
+        SuppressPerformSelectorLeakWarning([ctrl performSelector:method withObject:self]);
     }
 }
 
